@@ -1,0 +1,17 @@
+{
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "iso_url": "https://mirrors.sonic.net/pub/OpenBSD/6.0/amd64/install60.iso",
+      "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
+      "iso_checksum_type": "sha256",
+      "boot_wait": "20s",
+      "http_directory": "efw-files",
+      "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
+      "ssh_username": "packer",
+      "ssh_password": "packer",
+      "disk_size": "4608"
+    }
+  ]
+}
