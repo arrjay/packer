@@ -13,7 +13,7 @@
       "headless": true,
       "ssh_username": "packer",
       "ssh_password": "packer",
-      "disk_size": "4608"
+      "disk_size": "9216"
     }
   ],
   "provisioners":
