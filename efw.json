@@ -9,9 +9,24 @@
       "boot_wait": "20s",
       "http_directory": "efw-files",
       "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
+      "shutdown_command": "doas -u root shutdown -hp now",
+      "headless": true,
       "ssh_username": "packer",
       "ssh_password": "packer",
       "disk_size": "4608"
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "file",
+      "source": "efw-files/doas.conf",
+      "destination": "/tmp/doas.conf"
+    },
+    {
+      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "type": "shell",
+      "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
     }
   ]
 }
