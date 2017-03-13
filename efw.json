@@ -34,6 +34,18 @@
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
       "type": "shell",
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
+    },
+    {
+      "environment_vars":
+      [
+        "BUILD_SHA={{user `build_sha`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "efw-files/stamp.sh"
+      ]
     }
   ],
   "post-processors":
