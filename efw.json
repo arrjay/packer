@@ -1,4 +1,9 @@
 {
+  "variables": {
+    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
+    "build_sha": "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
+    "build_tag": "{{env `ATLAS_BUILD_GITHUB_TAG`}}"
+  },
   "builders":
   [
     {
@@ -13,7 +18,9 @@
       "headless": true,
       "ssh_username": "packer",
       "ssh_password": "packer",
-      "disk_size": "9216"
+      "disk_size": "9216",
+      "vm_name": "system.qcow2",
+      "output_directory": "output-qemu-efw"
     }
   ],
   "provisioners":
@@ -28,5 +35,12 @@
       "type": "shell",
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
     }
-  ]
+  ],
+  "post-processors":
+  [
+    {
+      "type": "manifest",
+      "output": "manifests/efw.json"
+    }
+   ]
 }
