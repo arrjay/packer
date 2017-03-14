@@ -2,7 +2,8 @@
   "variables": {
     "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
     "build_sha": "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
-    "build_tag": "{{env `ATLAS_BUILD_GITHUB_TAG`}}"
+    "build_tag": "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
+    "build_ts": "{{timestamp}}"
   },
   "builders":
   [
@@ -43,7 +44,8 @@
     {
       "environment_vars":
       [
-        "BUILD_SHA={{user `build_sha`}}"
+        "BUILD_SHA={{user `build_sha`}}",
+        "BUILD_TS={{user `build_ts`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
