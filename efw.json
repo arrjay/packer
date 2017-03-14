@@ -36,6 +36,11 @@
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
     },
     {
+      "type": "file",
+      "source": "efw-files/redist/openup",
+      "destination": "/tmp/openup"
+    },
+    {
       "environment_vars":
       [
         "BUILD_SHA={{user `build_sha`}}"
@@ -44,7 +49,8 @@
       "type": "shell",
       "scripts":
       [
-        "efw-files/stamp.sh"
+        "efw-files/stamp.sh",
+        "efw-files/openup.sh"
       ]
     }
   ],
