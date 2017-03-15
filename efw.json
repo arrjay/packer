@@ -52,7 +52,8 @@
       "scripts":
       [
         "efw-files/stamp.sh",
-        "efw-files/openup.sh"
+        "efw-files/openup.sh",
+        "efw-files/sysprep.sh"
       ]
     }
   ],
