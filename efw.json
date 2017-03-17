@@ -1,15 +1,19 @@
 {
   "variables": {
     "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
-    "build_sha": "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
-    "build_tag": "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
-    "build_ts": "{{timestamp}}"
+    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
+    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
+    "mirror":     "mirrors.sonic.net",
+    "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
+    "admin_nets": "{{env `ADMIN_NETS`}}",
+    "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
+    "build_ts":   "{{timestamp}}"
   },
   "builders":
   [
     {
       "type": "qemu",
-      "iso_url": "https://mirrors.sonic.net/pub/OpenBSD/6.0/amd64/install60.iso",
+      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
       "iso_checksum_type": "sha256",
       "boot_wait": "20s",
@@ -45,14 +49,45 @@
       "environment_vars":
       [
         "BUILD_SHA={{user `build_sha`}}",
-        "BUILD_TS={{user `build_ts`}}"
+        "BUILD_TS={{user `build_ts`}}",
+        "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
         "efw-files/stamp.sh",
-        "efw-files/openup.sh",
+        "efw-files/environs.sh",
+        "efw-files/openup.sh"
+      ]
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{.Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "efw-files/ovfenv.sh"
+      ]
+    },
+    {
+      "environment_vars":
+      [
+        "CABLEMODEM_IP={{user `cm_ip`}}",
+        "ADMIN_NETS={{user `admin_nets`}}",
+        "DNSSERVER_IPS={{user `dnc_ips`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "efw-files/pf-rules.sh"
+      ]
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
         "efw-files/sysprep.sh"
       ]
     }
