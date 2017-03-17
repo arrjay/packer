@@ -1,0 +1,25 @@
+{
+      "_boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\x207\x20x86_64 ks=",
+  "variables": {
+    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
+    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
+    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
+    "mirror":     "mirrors.kernel.org"
+  },
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "iso_url": "https://{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
+      "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
+      "iso_checksum_type": "sha256",
+      "http_directory": "wcs-files",
+      "ssh_timeout": "30m",
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "disk_size": "9216",
+      "vm_name": "system.qcow2",
+      "output_directory": "output-qemu-wcs"
+    }
+  ]
+}
