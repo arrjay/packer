@@ -16,7 +16,8 @@
       "ssh_timeout": "30m",
       "ssh_username": "root",
       "ssh_password": "packer",
-      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg<enter>",
+      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>",
+      "headless": true,
       "disk_size": "9216",
       "vm_name": "system.qcow2",
       "output_directory": "output-qemu-wcs"
