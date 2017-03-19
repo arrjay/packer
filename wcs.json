@@ -4,14 +4,14 @@
     "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
     "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
     "wcs_tld":    "cache.{{env `TOPLEVEL_DOMAIN`}}",
-    "mirror":     "mirrors.kernel.org",
+    "mirror":     "mko.wcs.bbxn.us",
     "build_ts":   "{{timestamp}}"
   },
   "builders":
   [
     {
       "type": "qemu",
-      "iso_url": "https://{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
+      "iso_url": "http://{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
       "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
       "iso_checksum_type": "sha256",
       "http_directory": "wcs-files",
@@ -37,7 +37,19 @@
       "type": "shell",
       "scripts":
       [
-        "wcs-files/stamp.sh"
+        "wcs-files/stamp.sh",
+        "wcs-files/augeas.sh"
+      ]
+    },
+    {
+      "environment_vars":
+      [
+        "WCS_TLD={{user `wcs_tld`}}"
+      ],
+      "type": "shell",
+      "scripts":
+      [
+        "wcs-files/squid.sh"
       ]
     }
   ]
