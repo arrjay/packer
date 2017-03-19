@@ -3,7 +3,9 @@
     "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
     "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
     "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
-    "mirror":     "mirrors.kernel.org"
+    "wcs_tld":    "cache.{{env `TOPLEVEL_DOMAIN`}}",
+    "mirror":     "mirrors.kernel.org",
+    "build_ts":   "{{timestamp}}"
   },
   "builders":
   [
@@ -21,6 +23,22 @@
       "disk_size": "9216",
       "vm_name": "system.qcow2",
       "output_directory": "output-qemu-wcs"
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "environment_vars":
+      [
+        "BUILD_SHA={{user `build_sha`}}",
+        "BUILD_TS={{user `build_ts`}}",
+        "MIRROR={{user `mirror`}}"
+      ],
+      "type": "shell",
+      "scripts":
+      [
+        "wcs-files/stamp.sh"
+      ]
     }
   ]
 }
