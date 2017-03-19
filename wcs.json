@@ -11,6 +11,10 @@
   [
     {
       "type": "qemu",
+      "qemuargs":
+      [
+        [ "-serial", "file:wcs-build-console.log" ]
+      ],
       "iso_url": "{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
       "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
       "iso_checksum_type": "sha256",
@@ -19,6 +23,7 @@
       "ssh_username": "root",
       "ssh_password": "packer",
       "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>",
+      "shutdown_command": "poweroff",
       "headless": true,
       "disk_size": "9216",
       "vm_name": "system.qcow2",
@@ -41,6 +46,11 @@
         "wcs-files/epel.sh",
         "wcs-files/augeas.sh"
       ]
+    },
+    {
+      "type": "file",
+      "source": "wcs-files/squid-svcs/datavol.sh",
+      "destination": "/tmp/datavol.sh"
     },
     {
       "environment_vars":
