@@ -2,7 +2,7 @@ The Routers
 ===========
 
 efw - external firewall. for outbound. makes little packet decisions.
-      performs NAT(64). holds transit, dmz networks. (3 nics)
+      performs NAT(64). holds transit, dmz int/ext networks. (4 nics)
 lfw - leaf firewall. holds subnets on the other end of an openvpn pipe.
 ifw - internal firewall. holds subnets into transit zone.
 tgw - transit gateway. openvpn endpoint for lfws. no filtering.
@@ -13,10 +13,13 @@ The Network Controllers
 dnc - DNS cache. performs recursive external resolution. no filtering.
       provides DNS64.
 dfw - DNS firewall. RPZ / localdata filtering before handoff to dnc.
-nms - DHCP Server / DNS authority. no filtering, can lookup internal names
+nms - DHCP Server / DNS authority. can lookup internal names
       and handoff to dnc. Paired. Routers forward packets to them.
 
 Auxiliary Systems
 =================
 
-wcs - Web cache. Squid configured as backwards and fowards proxy.
+wcs - Web cache. Squid configured as backwards and forwards proxy.
+lcs - Web cache. Squid configured as backwards and forwards proxy, connected
+      to wcs.
+log - statistics collection and logging endpoint. syslog + snmp / misc polls.
