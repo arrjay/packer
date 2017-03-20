@@ -58,6 +58,11 @@
       "destination": "/tmp/datavol.unit"
     },
     {
+      "type": "file",
+      "source": "wcs-files/squid.conf",
+      "destination": "/tmp/squid.conf"
+    },
+    {
       "environment_vars":
       [
         "WCS_TLD={{user `wcs_tld`}}"
