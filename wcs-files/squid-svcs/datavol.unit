@@ -1,0 +1,9 @@
+[Unit]
+Description=Setup Squid Data Volume
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/datavol.sh
+RemainAfterExit=true
+StandardOutput=journal
