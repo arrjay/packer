@@ -28,3 +28,4 @@ ln -s /usr/lib/systemd/system/squid.service /etc/systemd/system/multi-user.targe
 echo "updating /etc/hosts"
 echo "127.0.0.1 mko.wcs.bbxn.us" >> /etc/hosts
 echo "127.0.0.1 mtier.wcs.bbxn.us" >> /etc/hosts
+echo "127.0.0.1 sonic-mirrors.wcs.bbxn.us" >> /etc/hosts
