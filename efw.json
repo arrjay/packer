@@ -32,7 +32,7 @@
   [
     {
       "type": "file",
-      "source": "efw-files/doas.conf",
+      "source": "shared/openbsd/doas.conf",
       "destination": "/tmp/doas.conf"
     },
     {
@@ -42,7 +42,7 @@
     },
     {
       "type": "file",
-      "source": "efw-files/redist/openup",
+      "source": "shared/openbsd/redist/openup",
       "destination": "/tmp/openup"
     },
     {
@@ -56,9 +56,9 @@
       "type": "shell",
       "scripts":
       [
-        "efw-files/stamp.sh",
-        "efw-files/environs.sh",
-        "efw-files/openup.sh"
+        "shared/openbsd/stamp.sh",
+        "shared/openbsd/environs.sh",
+        "shared/openbsd/openup.sh"
       ]
     },
     {
@@ -66,7 +66,7 @@
       "type": "shell",
       "scripts":
       [
-        "efw-files/ovfenv.sh"
+        "shared/openbsd/ovfenv.sh"
       ]
     },
     {
@@ -88,7 +88,7 @@
       "type": "shell",
       "scripts":
       [
-        "efw-files/sysprep.sh"
+        "shared/openbsd/sysprep.sh"
       ]
     }
   ],
