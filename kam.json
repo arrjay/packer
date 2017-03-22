@@ -1,0 +1,88 @@
+{
+  "variables": {
+    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
+    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
+    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
+    "mirror":     "mirrors.sonic.net",
+    "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
+    "admin_nets": "{{env `ADMIN_NETS`}}",
+    "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
+    "system":     "kam",
+    "build_ts":   "{{timestamp}}"
+  },
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
+      "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
+      "iso_checksum_type": "sha256",
+      "boot_wait": "20s",
+      "http_directory": "{{user `system`}}-files",
+      "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
+      "shutdown_command": "doas -u root shutdown -hp now",
+      "headless": true,
+      "ssh_username": "packer",
+      "ssh_password": "packer",
+      "disk_size": "9216",
+      "vm_name": "system.img",
+      "format": "raw",
+      "output_directory": "output-qemu-{{user `system`}}"
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "file",
+      "source": "shared/openbsd/doas.conf",
+      "destination": "/tmp/doas.conf"
+    },
+    {
+      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "type": "shell",
+      "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
+    },
+    {
+      "type": "file",
+      "source": "shared/openbsd/redist/openup",
+      "destination": "/tmp/openup"
+    },
+    {
+      "environment_vars":
+      [
+        "BUILD_SHA={{user `build_sha`}}",
+        "BUILD_TS={{user `build_ts`}}",
+        "SYSTEM_TAG={{user `system`}}",
+        "MIRROR={{user `mirror`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "shared/openbsd/stamp.sh",
+        "shared/openbsd/environs.sh",
+        "shared/openbsd/openup.sh"
+      ]
+    },
+    {
+      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "type": "shell",
+      "inline": [ "rm /etc/hostname.*" ]
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "shared/openbsd/sysprep.sh"
+      ]
+    }
+  ],
+  "post-processors":
+  [
+    {
+      "type": "manifest",
+      "output": "manifests/{{user `system`}}.json"
+    }
+   ]
+}
