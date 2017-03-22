@@ -65,6 +65,14 @@
       ]
     },
     {
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "kam-files/gnupg.sh"
+      ]
+    },
+    {
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
       "type": "shell",
       "inline": [ "rm /etc/hostname.*" ]
