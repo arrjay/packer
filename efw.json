@@ -7,6 +7,7 @@
     "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
     "admin_nets": "{{env `ADMIN_NETS`}}",
     "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
+    "system":     "efw",
     "build_ts":   "{{timestamp}}"
   },
   "builders":
@@ -17,7 +18,7 @@
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
       "iso_checksum_type": "sha256",
       "boot_wait": "20s",
-      "http_directory": "efw-files",
+      "http_directory": "{{user `system`}}-files",
       "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
       "shutdown_command": "doas -u root shutdown -hp now",
       "headless": true,
@@ -25,7 +26,7 @@
       "ssh_password": "packer",
       "disk_size": "9216",
       "vm_name": "system.qcow2",
-      "output_directory": "output-qemu-efw"
+      "output_directory": "output-qemu-{{user `system`}}"
     }
   ],
   "provisioners":
@@ -50,6 +51,7 @@
       [
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
+        "SYSTEM_TAG={{user `system`}}",
         "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
@@ -80,7 +82,7 @@
       "type": "shell",
       "scripts":
       [
-        "efw-files/pf-rules.sh"
+        "{{user `system`}}-files/pf-rules.sh"
       ]
     },
     {
@@ -96,7 +98,7 @@
   [
     {
       "type": "manifest",
-      "output": "manifests/efw.json"
+      "output": "manifests/{{user `system`}}.json"
     }
    ]
 }
