@@ -69,7 +69,8 @@
       "type": "shell",
       "scripts":
       [
-        "kam-files/gnupg.sh"
+        "kam-files/gnupg.sh",
+        "kam-files/xinit.sh"
       ]
     },
     {
