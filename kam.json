@@ -61,6 +61,7 @@
       [
         "shared/openbsd/stamp.sh",
         "shared/openbsd/environs.sh",
+        "shared/openbsd/force-mp.sh",
         "shared/openbsd/openup.sh"
       ]
     },
