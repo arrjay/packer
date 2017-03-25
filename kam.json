@@ -70,7 +70,10 @@
       "type": "shell",
       "scripts":
       [
+        "kam-files/autotools.sh",
+        "kam-files/git.sh",
         "kam-files/gnupg.sh",
+        "kam-files/libgfshare.sh",
         "kam-files/xinit.sh"
       ]
     },
