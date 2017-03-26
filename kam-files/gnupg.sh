@@ -8,4 +8,4 @@ pkg_add pinentry-gtk2
 
 pkg_add easy-rsa
 
-printf 'export GNUPG_HOME=/tmp/.gnupg;mkdir $GNUPG_HOME\n\n' >> /root/.profile
+printf 'export GNUPGHOME=/tmp/.gnupg;mkdir $GNUPGHOME\nchmod 0700 $GNUPGHOME\n' >> /root/.profile
