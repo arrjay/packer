@@ -71,6 +71,11 @@
       ]
     },
     {
+      "type": "file",
+      "source": "kam-files/save.sh",
+      "destination": "/tmp/save.sh"
+    },
+    {
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
@@ -79,6 +84,7 @@
         "kam-files/git.sh",
         "kam-files/gnupg.sh",
         "kam-files/libgfshare.sh",
+        "kam-files/diskdeps.sh",
         "kam-files/xinit.sh"
       ]
     },
