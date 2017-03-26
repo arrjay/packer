@@ -14,6 +14,10 @@
   [
     {
       "type": "qemu",
+      "qemuargs":
+      [
+        [ "-m", "1024" ]
+      ],
       "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
       "iso_checksum_type": "sha256",
@@ -62,6 +66,7 @@
         "shared/openbsd/stamp.sh",
         "shared/openbsd/environs.sh",
         "shared/openbsd/force-mp.sh",
+        "kam-files/tmpfs.sh",
         "shared/openbsd/openup.sh"
       ]
     },
