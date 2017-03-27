@@ -76,6 +76,15 @@
       "destination": "/tmp/save.sh"
     },
     {
+      "type": "file",
+      "source": "kam-files/libassuan-assuan-socket.c.patch",
+      "destination": "/tmp/libassuan-assuan-socket.c.patch"
+    },
+    {
+      "environment_vars":
+      [
+        "MIRROR={{user `mirror`}}"
+      ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
