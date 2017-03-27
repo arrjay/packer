@@ -9,6 +9,7 @@ set -e
 pkg_add bzip2
 pkg_add gmake
 pkg_add gtk+2
+pkg_add libusb-compat
 
 mkdir -p /usr/local/src
 mkdir -p /usr/local/dist
@@ -94,7 +95,7 @@ set -e
 tar xjf /usr/local/dist/gnupg-2.1.19.tar.bz2 -C /usr/local/src
 cd /usr/local/src/gnupg-2.1.19
 # old texinfo? dndk
-./configure --disable-doc
+./configure --disable-doc --enable-ccid-driver
 make
 make install
 
