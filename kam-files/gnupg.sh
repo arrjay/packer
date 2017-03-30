@@ -9,7 +9,9 @@ set -e
 pkg_add bzip2
 pkg_add gmake
 pkg_add gtk+2
-pkg_add libusb-compat
+pkg_add libusb1
+# this one was a suprise...
+pkg_add gcc
 
 mkdir -p /usr/local/src
 mkdir -p /usr/local/dist
@@ -84,6 +86,9 @@ cd /usr/local/src/libgcrypt-1.7.6
 make
 make install
 
+# gnupg wants gcc 4.6 or newer?
+export CC=egcc
+
 ftp -o /usr/local/dist/gnupg-2.1.19.tar.bz2 https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.1.19.tar.bz2
 sha512=$(sha512 /usr/local/dist/gnupg-2.1.19.tar.bz2 | cut -d= -f2)
 set +e
@@ -98,6 +103,8 @@ cd /usr/local/src/gnupg-2.1.19
 ./configure --disable-doc --enable-ccid-driver
 make
 make install
+
+unset CC
 
 ftp -o /usr/local/dist/pinentry-1.0.0.tar.bz2 https://www.gnupg.org/ftp/gcrypt/pinentry/pinentry-1.0.0.tar.bz2
 sha512=$(sha512 /usr/local/dist/pinentry-1.0.0.tar.bz2 | cut -d= -f2)
