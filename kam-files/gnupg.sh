@@ -10,8 +10,14 @@ pkg_add bzip2
 pkg_add gmake
 pkg_add gtk+2
 pkg_add libusb1
+pkg_add pcsc-lite
+pkg_add pcsc-tools
+pkg_add ccid
 # this one was a suprise...
 pkg_add gcc
+
+# enable pcscd for next time
+rcctl enable pcscd
 
 mkdir -p /usr/local/src
 mkdir -p /usr/local/dist
