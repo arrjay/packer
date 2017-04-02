@@ -8,6 +8,7 @@
     "admin_nets": "{{env `ADMIN_NETS`}}",
     "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
     "system":     "kam",
+    "disk_mb":    "9216",
     "build_ts":   "{{timestamp}}"
   },
   "builders":
@@ -28,10 +29,19 @@
       "headless": true,
       "ssh_username": "packer",
       "ssh_password": "packer",
-      "disk_size": "9216",
+      "disk_size": "{{user `disk_mb`}}",
       "vm_name": "system.img",
       "format": "raw",
       "output_directory": "output-qemu-{{user `system`}}"
+    },
+    {
+      "type": "hyperv-iso",
+      "disk_size": "{{user `disk_mb`}}",
+      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/snapshots/amd64/install61.iso",
+      "iso_checksum_type": "none",
+      "ssh_username": "packer",
+      "ssh_password": "packer",
+      "switch_name": "NAT"
     }
   ],
   "provisioners":
