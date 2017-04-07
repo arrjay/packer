@@ -116,6 +116,11 @@
       "destination": "/tmp/libassuan-assuan-socket.c.patch"
     },
     {
+      "type": "file",
+      "source": "kam-files/key-twincard.sh",
+      "destination": "/tmp/key-twincard.sh"
+    },
+    {
       "environment_vars":
       [
         "MIRROR={{user `mirror`}}"
