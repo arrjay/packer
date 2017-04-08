@@ -10,6 +10,7 @@
     "build_vmw_headless": "{{ env `BUILD_VMWARE_HEADLESS`}}",
     "mirror":     "sonic-mirrors.wcs.bbxn.us",
     "openup_mirror": "mtier.wcs.bbxn.us",
+    "gnupg_mirror": "gnupg.wcs.bbxn.us",
     "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
     "admin_nets": "{{env `ADMIN_NETS`}}",
     "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
@@ -122,6 +123,7 @@
     {
       "environment_vars":
       [
+        "GNUPG_MIRROR={{user `gnupg_mirror`}}",
         "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
