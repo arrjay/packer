@@ -40,11 +40,6 @@
     },
     {
       "type": "vmware-iso",
-      "remote_type": "esx5",
-      "remote_host": "{{ user `packer_esx_host` }}",
-      "remote_datastore": "{{ user `packer_esx_datastore` }}",
-      "remote_username": "{{ user `packer_esx_user` }}",
-      "remote_password": "{{ user `packer_esx_pass` }}",
       "keep_registered": true,
       "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
@@ -57,7 +52,8 @@
       "ssh_username": "packer",
       "ssh_password": "packer",
       "disk_size": "{{user `disk_mb`}}",
-      "vm_name": "kam"
+      "vm_name": "{{user `system`}}",
+      "output_directory": "output-vmware-{{user `system`}}"
     },
     {
       "type": "hyperv-iso",
@@ -114,6 +110,11 @@
       "type": "file",
       "source": "kam-files/libassuan-assuan-socket.c.patch",
       "destination": "/tmp/libassuan-assuan-socket.c.patch"
+    },
+    {
+      "type": "file",
+      "source": "kam-files/key-twincard.sh",
+      "destination": "/tmp/key-twincard.sh"
     },
     {
       "environment_vars":

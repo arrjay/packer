@@ -128,4 +128,7 @@ make install
 
 pkg_add easy-rsa
 
-printf 'export GNUPGHOME=/tmp/.gnupg;mkdir $GNUPGHOME\nchmod 0700 $GNUPGHOME\n' >> /root/.profile
+printf 'export GNUPGHOME=/tmp/.gnupg;mkdir -p $GNUPGHOME\nchmod 0700 $GNUPGHOME\n' >> /root/.profile
+
+# copy management scripts to /root
+cp /tmp/key-twincard.sh /root
