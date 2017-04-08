@@ -15,8 +15,9 @@ case "${uname_s}" in
     export BUILD_VMWARE_HEADLESS=true
     ;;
 esac
+export PACKER_ESX_HOST=127.0.0.1
 
 echo "dumping environment"
 env
 
-packer build wcs.json
+packer build kam.json
