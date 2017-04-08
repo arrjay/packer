@@ -43,6 +43,7 @@
       "shutdown_command": "poweroff",
       "headless": "{{user `vmw_headless`}}",
       "disk_size": "9216",
+      "disk_additional_size": "36864",
       "vm_name": "wcs",
       "output_directory": "output-vmware-wcs"
     }
