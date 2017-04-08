@@ -7,7 +7,9 @@
     "packer_esx_datastore": "{{env `PACKER_ESX_DATASTORE`}}",
     "packer_esx_user": "{{ env `PACKER_ESX_USER`}}",
     "packer_esx_pass": "{{ env `PACKER_ESX_PASS`}}",
-    "mirror":     "mirrors.sonic.net",
+    "build_vmw_headless": "{{ env `BUILD_VMWARE_HEADLESS`}}",
+    "mirror":     "sonic-mirrors.wcs.bbxn.us",
+    "openup_mirror": "mtier.wcs.bbxn.us",
     "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
     "admin_nets": "{{env `ADMIN_NETS`}}",
     "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
@@ -23,7 +25,7 @@
       [
         [ "-m", "1024" ]
       ],
-      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
+      "iso_url": "http://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
       "iso_checksum_type": "sha256",
       "boot_wait": "20s",
@@ -41,14 +43,14 @@
     {
       "type": "vmware-iso",
       "keep_registered": true,
-      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
+      "iso_url": "http://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
       "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
       "iso_checksum_type": "sha256",
       "boot_wait": "20s",
       "http_directory": "{{user `system`}}-files",
       "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
       "shutdown_command": "doas -u root shutdown -hp now",
-      "headless": true,
+      "headless": "{{user `build_vmw_headless`}}",
       "ssh_username": "packer",
       "ssh_password": "packer",
       "disk_size": "{{user `disk_mb`}}",
@@ -58,7 +60,7 @@
     {
       "type": "hyperv-iso",
       "disk_size": "{{user `disk_mb`}}",
-      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/snapshots/amd64/install61.iso",
+      "iso_url": "http://{{user `mirror`}}/pub/OpenBSD/snapshots/amd64/install61.iso",
       "iso_checksum_type": "none",
       "ssh_username": "packer",
       "ssh_password": "packer",
@@ -88,6 +90,7 @@
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
+        "OPENUP_MIRROR={{user `openup_mirror`}}",
         "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
