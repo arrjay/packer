@@ -126,7 +126,7 @@ cd /usr/local/src/gnupg-1.4.21
 make
 make install
 
-printf '\nPATH=${PATH}:/usr/local/gnupg14/bin\nexportPATH\n' >> /root/.profile
+printf '\nPATH=${PATH}:/usr/local/gnupg14/bin\nexport PATH\n' >> /root/.profile
 
 ftp -o /usr/local/dist/pinentry-1.0.0.tar.bz2 http://${GNUPG_MIRROR}/ftp/gcrypt/pinentry/pinentry-1.0.0.tar.bz2
 sha512=$(sha512 /usr/local/dist/pinentry-1.0.0.tar.bz2 | cut -d= -f2)
@@ -148,5 +148,6 @@ printf '\nexport GNUPGHOME=/tmp/.gnupg;mkdir -p $GNUPGHOME\nchmod 0700 $GNUPGHOM
 
 # copy management scripts to /root
 pkg_add bash
+pkg_add fdupes
 
 cp /tmp/key-twincard.sh /root
