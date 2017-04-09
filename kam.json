@@ -3,6 +3,7 @@
     "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
     "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
     "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
+    "packer_esx_remote_type": "{{ env `PACKER_ESX_RTYPE`}}",
     "packer_esx_host": "{{ env `PACKER_ESX_HOST`}}",
     "packer_esx_datastore": "{{env `PACKER_ESX_DATASTORE`}}",
     "packer_esx_user": "{{ env `PACKER_ESX_USER`}}",
@@ -56,6 +57,10 @@
       "ssh_password": "packer",
       "disk_size": "{{user `disk_mb`}}",
       "vm_name": "{{user `system`}}",
+      "remote_type": "{{user `packer_esx_remote_type`}}",
+      "remote_host": "{{ user `packer_esx_host`}}",
+      "remote_username": "{{ user `packer_esx_user`}}",
+      "remote_password": "{{ user `packer_esx_pass`}}",
       "output_directory": "output-vmware-{{user `system`}}",
       "vmx_data": {
         "memsize": "1024"
