@@ -112,6 +112,22 @@ make install
 
 unset CC
 
+ftp -o /usr/local/dist/gnupg-1.4.21.tar.bz2 http://${GNUPG_MIRROR}/ftp/gcrypt/gnupg/gnupg-1.4.21.tar.bz2
+sha512=$(sha512 /usr/local/dist/gnupg-1.4.21.tar.bz2 | cut -d= -f2)
+set +e
+if [ "${sha512}" != " 619e0fbc10310c7e55d129027e2945791fe91a0884b1d6f53acb4b2e380d1c6e71d1a516a59876182c5c70a4227d44a74ceda018c343b5291fa9a5d6de77c984" ] ; then
+  echo 'bad sum for gnupg-1.4.21.tar.bz2' 1>&2
+  exit 1
+fi
+set -e
+tar xjf /usr/local/dist/gnupg-1.4.21.tar.bz2 -C /usr/local/src
+cd /usr/local/src/gnupg-1.4.21
+./configure --prefix=/usr/local/gnupg14
+make
+make install
+
+printf '\nPATH=${PATH}:/usr/local/gnupg14/bin\nexportPATH\n' >> /root/.profile
+
 ftp -o /usr/local/dist/pinentry-1.0.0.tar.bz2 http://${GNUPG_MIRROR}/ftp/gcrypt/pinentry/pinentry-1.0.0.tar.bz2
 sha512=$(sha512 /usr/local/dist/pinentry-1.0.0.tar.bz2 | cut -d= -f2)
 set +e
@@ -128,7 +144,9 @@ make install
 
 pkg_add easy-rsa
 
-printf 'export GNUPGHOME=/tmp/.gnupg;mkdir -p $GNUPGHOME\nchmod 0700 $GNUPGHOME\n' >> /root/.profile
+printf '\nexport GNUPGHOME=/tmp/.gnupg;mkdir -p $GNUPGHOME\nchmod 0700 $GNUPGHOME\n' >> /root/.profile
 
 # copy management scripts to /root
+pkg_add bash
+
 cp /tmp/key-twincard.sh /root
