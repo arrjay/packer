@@ -149,5 +149,6 @@ printf '\nexport GNUPGHOME=/tmp/.gnupg;mkdir -p $GNUPGHOME\nchmod 0700 $GNUPGHOM
 # copy management scripts to /root
 pkg_add bash
 pkg_add fdupes
+pkg_add gawk
 
 cp /tmp/key-twincard.sh /root

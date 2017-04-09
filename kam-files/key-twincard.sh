@@ -91,8 +91,8 @@ one=""
 two=""
 
 for l in e s a ; do
-_one="${_one} $(gpg2 --list-keys --with-colons "${GPG_EMAIL}" | grep "sub:u:4096" | grep "${l}::::::" |awk -F: '{ key[$7]=$5 } END { asort(key) ; print key[1] }')"
-_two="${_two} $(gpg2 --list-keys --with-colons "${GPG_EMAIL}" | grep "sub:u:4096" | grep "${l}::::::" |awk -F: '{ key[$7]=$5 } END { asort(key) ; print key[2] }')"
+_one="${_one} $(gpg2 --list-keys --with-colons "${GPG_EMAIL}" | grep "sub:u:4096" | grep "${l}::::::" |gawk -F: '{ key[$7]=$5 } END { asort(key) ; print key[1] }')"
+_two="${_two} $(gpg2 --list-keys --with-colons "${GPG_EMAIL}" | grep "sub:u:4096" | grep "${l}::::::" |gawk -F: '{ key[$7]=$5 } END { asort(key) ; print key[2] }')"
 done
 
 for k in ${_one} ; do
