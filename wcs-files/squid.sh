@@ -32,3 +32,5 @@ echo "updating /etc/hosts"
 echo "127.0.0.1 mko.wcs.bbxn.us" >> /etc/hosts
 echo "127.0.0.1 mtier.wcs.bbxn.us" >> /etc/hosts
 echo "127.0.0.1 sonic-mirrors.wcs.bbxn.us" >> /etc/hosts
+echo "127.0.0.1 gnupg.wcs.bbxn.us" >> /etc/hosts
+echo "127.0.0.1 dscurf.wcs.bbxn.us" >> /etc/hosts
