@@ -56,7 +56,11 @@
       "ssh_password": "packer",
       "disk_size": "{{user `disk_mb`}}",
       "vm_name": "{{user `system`}}",
-      "output_directory": "output-vmware-{{user `system`}}"
+      "output_directory": "output-vmware-{{user `system`}}",
+      "vmx_data_post": {
+        "usb.present": "TRUE",
+        "usb.generic.allowHID": "TRUE"
+      }
     },
     {
       "type": "hyperv-iso",
