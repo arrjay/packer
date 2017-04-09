@@ -181,8 +181,8 @@ pkill gpg-agent
 rm -rf scratch
 
 # shred the previous exports
-shred ${GPG_EMAIL}-redone.asc
-shred ${GPG_EMAIL}-redtwo.asc
+rm -P ${GPG_EMAIL}-redone.asc
+rm -P ${GPG_EMAIL}-redtwo.asc
 
 # import the second key and grab everything in it
 mkdir scratch
