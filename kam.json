@@ -139,6 +139,16 @@
       "destination": "/tmp/weighted-share.sh"
     },
     {
+      "type": "file",
+      "source": "kam-files/reset-yk-applet.gp",
+      "destination": "/tmp/reset-yk-applet.gp"
+    },
+    {
+      "type": "file",
+      "source": "kam-files/reset-yk-applet.sh",
+      "destination": "/tmp/reset-yk-applet.sh"
+    },
+    {
       "environment_vars":
       [
         "GNUPG_MIRROR={{user `gnupg_mirror`}}",

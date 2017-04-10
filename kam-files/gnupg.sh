@@ -153,3 +153,5 @@ pkg_add gawk
 
 cp /tmp/key-twincard.sh /root
 cp /tmp/weighted-share.sh /root
+cp /tmp/reset-yk-applet.gp /root
+cp /tmp/reset-yk-applet.sh /root
