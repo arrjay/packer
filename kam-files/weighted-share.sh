@@ -108,6 +108,7 @@ done
 env GNUPGHOME=$(pwd)/scratch gpg2 --export -a ${pubkeys} > ${GPG_EMAIL}-upload.asc
 
 # now assemble a legacy gpg keyring...
+rm -rf one
 mkdir one
 ( cd one && gpgsplit ../"${GPG_EMAIL}-blackone.gpg" )
 cat one/* > "${GPG_EMAIL}-gpg14.gpg"
