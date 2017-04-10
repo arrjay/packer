@@ -152,6 +152,7 @@
         "kam-files/autotools.sh",
         "kam-files/gnupg.sh",
         "kam-files/libgfshare.sh",
+        "kam-files/yubico-piv-tool.sh",
         "kam-files/diskdeps.sh",
         "kam-files/xinit.sh"
       ]
