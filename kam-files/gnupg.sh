@@ -152,3 +152,4 @@ pkg_add fdupes
 pkg_add gawk
 
 cp /tmp/key-twincard.sh /root
+cp /tmp/weighted-share.sh /root

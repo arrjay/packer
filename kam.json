@@ -134,6 +134,11 @@
       "destination": "/tmp/key-twincard.sh"
     },
     {
+      "type": "file",
+      "source": "kam-files/weighted-share.sh",
+      "destination": "/tmp/weighted-share.sh"
+    },
+    {
       "environment_vars":
       [
         "GNUPG_MIRROR={{user `gnupg_mirror`}}",
