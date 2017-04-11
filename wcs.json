@@ -14,7 +14,10 @@
       "type": "qemu",
       "qemuargs":
       [
-        [ "-serial", "file:wcs-build-console.log" ]
+        [ "-serial", "file:wcs-build-console.log" ],
+        [ "-drive", "file=/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd,if=pflash,format=raw,unit=0,readonly=on" ],
+        [ "-drive", "file=output-qemu-wcs-nvram.fd,if=pflash,format=raw,unit=1" ],
+        [ "-drive", "file=output-qemu-wcs/system.qcow2,if=virtio" ]
       ],
       "iso_url": "{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
       "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
@@ -23,7 +26,7 @@
       "ssh_timeout": "30m",
       "ssh_username": "root",
       "ssh_password": "packer",
-      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>",
+      "boot_command": "c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>",
       "shutdown_command": "poweroff",
       "headless": true,
       "disk_size": "9216",
