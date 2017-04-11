@@ -4,7 +4,7 @@
     "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
     "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
     "wcs_tld":    "cache.{{env `TOPLEVEL_DOMAIN`}}",
-    "mirror":     "http://mirrors.kernel.org",
+    "mirror":     "http://mko.wcs.bbxn.us",
     "vmw_headless": "{{env `BUILD_VMWARE_HEADLESS`}}",
     "build_ts":   "{{timestamp}}"
   },
