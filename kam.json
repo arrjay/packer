@@ -16,6 +16,7 @@
     "openup_mirror": "mtier.wcs.bbxn.us",
     "gnupg_mirror": "gnupg.wcs.bbxn.us",
     "gfshare_mirror": "dscurf.wcs.bbxn.us",
+    "ykdev_mirror": "ykdev.wcs.bbxn.us",
     "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
     "admin_nets": "{{env `ADMIN_NETS`}}",
     "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
@@ -156,6 +157,7 @@
       [
         "GNUPG_MIRROR={{user `gnupg_mirror`}}",
         "GFSHARE_MIRROR={{user `gfshare_mirror`}}",
+        "YKDEV_MIRROR={{user `ykdev_mirror`}}",
         "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
