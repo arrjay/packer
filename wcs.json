@@ -47,6 +47,7 @@
       "ssh_timeout": "30m",
       "ssh_username": "root",
       "ssh_password": "packer",
+      "guest_os_type": "centos-64",
       "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg<enter>",
       "shutdown_command": "poweroff",
       "headless": "{{user `vmw_headless`}}",
@@ -61,6 +62,9 @@
       "vnc_disable_password": true,
       "keep_registered": true,
       "vmx_data": {
+        "virtualhw.version": "10",
+        "scsi0.virtualdev": "pvscsi",
+        "ethernet0.virtualdev": "vmxnet3",
         "ethernet0.networkName": "{{user `vmware_remote_network`}}"
       }
     }
