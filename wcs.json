@@ -47,7 +47,7 @@
       "ssh_timeout": "30m",
       "ssh_username": "root",
       "ssh_password": "packer",
-      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg<enter>",
+      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg<enter>",
       "shutdown_command": "poweroff",
       "headless": "{{user `vmw_headless`}}",
       "disk_size": "9216",
