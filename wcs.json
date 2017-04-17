@@ -6,7 +6,12 @@
     "wcs_tld":    "cache.{{env `TOPLEVEL_DOMAIN`}}",
     "mirror":     "http://mko.wcs.bbxn.us",
     "vmw_headless": "{{env `BUILD_VMWARE_HEADLESS`}}",
-    "build_ts":   "{{timestamp}}"
+    "build_ts":   "{{timestamp}}",
+    "vmware_remote_type": "{{ env `PACKER_ESX_RTYPE`}}",
+    "vmware_host": "{{ env `PACKER_ESX_HOST`}}",
+    "vmware_user": "{{ env `PACKER_ESX_USER`}}",
+    "esx_password": "{{ env `PACKER_ESX_PASS`}}",
+    "vmware_remote_network": "{{ env `PACKER_ESX_VPG`}}"
   },
   "builders":
   [
@@ -47,8 +52,17 @@
       "headless": "{{user `vmw_headless`}}",
       "disk_size": "9216",
       "disk_additional_size": "36864",
-      "vm_name": "wcs",
-      "output_directory": "output-vmware-wcs"
+      "vm_name": "wcs-{{user `build_ts`}}",
+      "output_directory": "output-vmware-wcs",
+      "remote_type": "{{ user `vmware_remote_type`}}",
+      "remote_host": "{{ user `vmware_host`}}",
+      "remote_username": "{{ user `vmware_user`}}",
+      "remote_password": "{{ user `esx_password`}}",
+      "vnc_disable_password": true,
+      "keep_registered": true,
+      "vmx_data": {
+        "ethernet0.networkName": "{{user `vmware_remote_network`}}"
+      }
     }
   ],
   "provisioners":
