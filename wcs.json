@@ -68,6 +68,9 @@
       "vmx_data": {
         "firmware": "efi",
         "virtualhw.version": "10",
+        "vcpu.hotadd": true,
+        "mem.hostadd": true,
+        "tools.upgrade.policy": "manual",
         "scsi0.virtualdev": "pvscsi",
         "ethernet0.virtualdev": "vmxnet3",
         "ethernet0.networkName": "{{user `vmware_remote_network`}}"
