@@ -1,82 +1,75 @@
 {
   "variables": {
-    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
-    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
-    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
-    "wcs_tld":    "cache.{{env `TOPLEVEL_DOMAIN`}}",
-    "mirror":     "{{ env `MKO_HOST`}}",
-    "vmw_headless": "{{env `BUILD_VMWARE_HEADLESS`}}",
-    "build_ts":   "{{timestamp}}",
-    "vmware_remote_type": "{{ env `PACKER_ESX_RTYPE`}}",
-    "vmware_host": "{{ env `PACKER_ESX_HOST`}}",
-    "vmware_user": "{{ env `PACKER_ESX_USER`}}",
-    "esx_password": "{{ env `PACKER_ESX_PASS`}}",
-    "vmware_remote_network": "{{ env `PACKER_ESX_VPG`}}",
-    "esx_datastore": "{{ env `PACKER_ESX_DATASTORE`}}",
-    "bios_boot": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
-    "bios_boot2": "<enter>",
-    "efi_boot": "c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
-    "efi_boot2": "<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>"
+    "wcs_tld":			"cache.{{env `TOPLEVEL_DOMAIN`}}",
+    "system":			"wcs",
+    "disk_size_mb":		"9216",
+    "data_disk_size_mb":	"32768"
   },
   "builders":
   [
     {
-      "type": "qemu",
+      "type":			"qemu",
       "qemuargs":
       [
-        [ "-serial", "file:wcs-build-console.log" ],
-        [ "-drive", "file=/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd,if=pflash,format=raw,unit=0,readonly=on" ],
-        [ "-drive", "file=output-qemu-wcs-nvram.fd,if=pflash,format=raw,unit=1" ],
-        [ "-drive", "file=output-qemu-wcs/system.qcow2,if=virtio" ]
+        [ "-serial", "file:{{user `system`}}-build-console.log" ],
+        [ "-drive", "{{user `packer_qemu_ovmfarg`}}" ],
+        [ "-drive", "file=output-qemu-{{user `system`}}-nvram.fd,if=pflash,format=raw,unit=1" ],
+        [ "-drive", "file=output-qemu-{{user `system`}}/system.qcow2,if=virtio" ]
       ],
-      "iso_url": "{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
-      "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
-      "iso_checksum_type": "sha256",
-      "http_directory": "wcs-files",
-      "ssh_timeout": "30m",
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "boot_command": "{{user `efi_boot`}}mirroruri={{user `mirror`}} ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0{{user `efi_boot2`}}",
-      "shutdown_command": "poweroff",
-      "headless": true,
-      "disk_size": "9216",
-      "vm_name": "system.qcow2",
-      "output_directory": "output-qemu-wcs"
+      "headless":		"{{user `packer_qemu_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"system.qcow2",
+      "output_directory":	"output-qemu-{{user `system`}}",
+
+      "iso_url":		"{{user `mirrors_kernel_org`}}/{{user `c7_netinstall`}}",
+      "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
+      "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
+
+      "boot_command":	"{{user `c7_efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `mirrors_kernel_org`}} console=ttyS0{{user `c7_efi_boot2`}}",
+      "shutdown_command":	"{{user `c7_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_timeout":		"{{user `c7_inst_timeout`}}",
+      "ssh_username":		"{{user `c7_ssh_user`}}",
+      "ssh_password":		"{{user `c7_ssh_pass`}}"
     },
     {
-      "type": "vmware-iso",
-      "iso_url": "{{user `mirror`}}/centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
-      "iso_checksum": "f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
-      "iso_checksum_type": "sha256",
-      "http_directory": "wcs-files",
-      "ssh_timeout": "30m",
-      "ssh_username": "root",
-      "ssh_password": "packer",
-      "guest_os_type": "centos-64",
-      "boot_command": "{{user `efi_boot`}}mirroruri={{user `mirror`}} ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg{{user `efi_boot2`}}",
-      "shutdown_command": "poweroff",
-      "headless": "{{user `vmw_headless`}}",
-      "disk_size": "9216",
-      "disk_additional_size": "36864",
-      "vm_name": "wcs-{{user `build_ts`}}",
-      "output_directory": "output-vmware-wcs",
-      "remote_type": "{{ user `vmware_remote_type`}}",
-      "remote_host": "{{ user `vmware_host`}}",
-      "remote_username": "{{ user `vmware_user`}}",
-      "remote_password": "{{ user `esx_password`}}",
-      "remote_datastore": "{{ user `esx_datastore`}}",
-      "vnc_disable_password": true,
-      "keep_registered": true,
-      "vmx_data": {
-        "firmware": "efi",
-        "virtualhw.version": "10",
-        "vcpu.hotadd": true,
-        "mem.hostadd": true,
-        "tools.upgrade.policy": "manual",
-        "scsi0.virtualdev": "pvscsi",
-        "ethernet0.virtualdev": "vmxnet3",
-        "ethernet0.networkName": "{{user `vmware_remote_network`}}"
-      }
+      "type":			"vmware-iso",
+      "vmx_data":
+      {
+        "firmware":			"bios",
+        "virtualhw.version":		"10",
+        "tools.upgrade.policy":		"manual",
+        "scsi0.virtualdev":		"pvscsi",
+        "ethernet0.virtualdev":		"vmxnet3",
+        "ethernet0.networkName":	"{{user `packer_esx_remote_network`}}"
+      },
+      "headless":		"{{user `build_vmw_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"{{user `system`}}-{{user `build_ts`}}",
+      "output_directory":	"output-vmware-{{user `system`}}",
+      "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+      "vmx_data_post":		{ "vcpu.hotadd": true, "mem.hotadd": true },
+      "disk_additional_size":	"{{user `data_disk_size_mb`}}",
+
+      "remote_type":		"{{user `packer_esx_remote_type`}}",
+      "remote_host":		"{{user `packer_esx_remote_host`}}",
+      "remote_username":	"{{user `packer_esx_remote_user`}}",
+      "remote_password":	"{{user `packer_esx_remote_pass`}}",
+      "remote_datastore":	"{{user `packer_esx_remote_datastore`}}",
+      "vnc_disable_password":	"{{user `packer_vmware_vnc_passwordless`}}",
+
+      "iso_url":		"{{user `mirrors_kernel_org`}}/{{user `c7_netinstall`}}",
+      "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
+      "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
+
+      "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `mirrors_kernel_org`}}{{user `c7_bios_boot2`}}",
+      "shutdown_command":	"{{user `c7_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_timeout":		"{{user `c7_inst_timeout`}}",
+      "ssh_username":		"{{user `c7_ssh_user`}}",
+      "ssh_password":		"{{user `c7_ssh_pass`}}"
     }
   ],
   "provisioners":

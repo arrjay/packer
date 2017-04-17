@@ -1,88 +1,71 @@
 {
   "variables": {
-    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
-    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
-    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
-    "packer_esx_remote_type": "{{ env `PACKER_ESX_RTYPE`}}",
-    "packer_esx_host": "{{ env `PACKER_ESX_HOST`}}",
-    "packer_esx_datastore": "{{env `PACKER_ESX_DATASTORE`}}",
-    "packer_esx_user": "{{ env `PACKER_ESX_USER`}}",
-    "packer_esx_pass": "{{ env `PACKER_ESX_PASS`}}",
-    "build_vmw_headless": "{{ env `BUILD_VMWARE_HEADLESS`}}",
-    "mirror":     "sonic-mirrors.wcs.bbxn.us",
-    "iso_url":    "http://sonic-mirrors.wcs.bbxn.us/pub/OpenBSD/6.1/amd64/install61.iso",
-    "iso_checksum": "dfb4bf2408d993645ef9560e6913be48ca6e854322c42156954d4da93d450fd9",
-    "iso_checksum_type": "sha256",
-    "openup_mirror": "mtier.wcs.bbxn.us",
-    "gnupg_mirror": "gnupg.wcs.bbxn.us",
-    "gfshare_mirror": "dscurf.wcs.bbxn.us",
-    "ykdev_mirror": "ykdev.wcs.bbxn.us",
-    "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
-    "admin_nets": "{{env `ADMIN_NETS`}}",
-    "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
-    "system":     "kam",
-    "disk_mb":    "9216",
-    "build_ts":   "{{timestamp}}"
+    "system":		"kam",
+    "disk_size_mb":	"9216",
+    "memory_mb":	"1024"
   },
   "builders":
   [
     {
-      "type": "qemu",
-      "qemuargs":
-      [
-        [ "-m", "1024" ]
-      ],
-      "iso_url": "{{user `iso_url`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "boot_wait": "20s",
-      "http_directory": "{{user `system`}}-files",
-      "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
-      "shutdown_command": "doas -u root shutdown -hp now",
-      "headless": true,
-      "ssh_username": "packer",
-      "ssh_password": "packer",
-      "disk_size": "{{user `disk_mb`}}",
-      "vm_name": "system.img",
-      "format": "raw",
-      "output_directory": "output-qemu-{{user `system`}}"
+      "type":			"qemu",
+      "qemuargs":		[ [ "-m", "{{user `memory_mb`}}" ] ],
+      "headless":		"{{user `packer_qemu_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"system.img",
+      "format":			"raw",
+      "output_directory":	"output-qemu-{{user `system`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
     {
-      "type": "vmware-iso",
-      "keep_registered": true,
-      "iso_url": "{{user `iso_url`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "boot_wait": "20s",
-      "http_directory": "{{user `system`}}-files",
-      "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
-      "shutdown_command": "doas -u root shutdown -hp now",
-      "headless": "{{user `build_vmw_headless`}}",
-      "ssh_username": "packer",
-      "ssh_password": "packer",
-      "disk_size": "{{user `disk_mb`}}",
-      "vm_name": "{{user `system`}}",
-      "remote_type": "{{user `packer_esx_remote_type`}}",
-      "remote_host": "{{ user `packer_esx_host`}}",
-      "remote_username": "{{ user `packer_esx_user`}}",
-      "remote_password": "{{ user `packer_esx_pass`}}",
-      "output_directory": "output-vmware-{{user `system`}}",
-      "vmx_data": {
-        "memsize": "1024"
-      },
-      "vmx_data_post": {
-        "usb.present": "TRUE",
-        "usb.generic.allowHID": "TRUE"
-      }
+      "type":			"vmware-iso",
+      "vmx_data":		{ "memsize": "{{user `memory_mb`}}", "ethernet0.networkName": "{{user `packer_esx_remote_network`}}" },
+      "headless":		"{{user `build_vmw_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"{{user `system`}}",
+      "output_directory":	"output-vmware-{{user `system`}}",
+      "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+      "vmx_data_post":		{ "usb.present": "TRUE", "usb.generic.allowHID": "TRUE" },
+
+      "remote_type":		"{{user `packer_esx_remote_type`}}",
+      "remote_host":		"{{user `packer_esx_remote_host`}}",
+      "remote_username":	"{{user `packer_esx_remote_user`}}",
+      "remote_password":	"{{user `packer_esx_remote_pass`}}",
+      "remote_datastore":	"{{user `packer_esx_remote_datastore`}}",
+      "vnc_disable_password":	"{{user `packer_vmware_vnc_passwordless`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
     {
-      "type": "hyperv-iso",
-      "disk_size": "{{user `disk_mb`}}",
-      "iso_url": "{{user `iso_url`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "ssh_username": "packer",
-      "ssh_password": "packer",
+      "type":			"hyperv-iso",
+      "disk_size":		"{{user `disk_size_mb`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}",
       "switch_name": "NAT"
     }
   ],
@@ -110,7 +93,7 @@
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
         "OPENUP_MIRROR={{user `openup_mirror`}}",
-        "MIRROR={{user `mirror`}}"
+        "MIRROR={{user `mirrors_openbsd`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
@@ -155,9 +138,9 @@
     {
       "environment_vars":
       [
-        "GNUPG_MIRROR={{user `gnupg_mirror`}}",
-        "GFSHARE_MIRROR={{user `gfshare_mirror`}}",
-        "YKDEV_MIRROR={{user `ykdev_mirror`}}",
+        "GNUPG_MIRROR={{user `mirrors_gnupg`}}",
+        "GFSHARE_MIRROR={{user `mirrors_libgfshare`}}",
+        "YKDEV_MIRROR={{user `mirrors_ykdev`}}",
         "MIRROR={{user `mirror`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",

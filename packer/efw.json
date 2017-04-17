@@ -1,32 +1,33 @@
 {
   "variables": {
-    "build_slug": "{{env `ATLAS_BUILD_SLUG`}}",
-    "build_sha":  "{{env `ATLAS_BUILD_GITHUB_COMMIT_SHA`}}",
-    "build_tag":  "{{env `ATLAS_BUILD_GITHUB_TAG`}}",
-    "mirror":     "mirrors.sonic.net",
-    "cm_ip":      "{{env `CABLE_MODEM_IP`}}",
-    "admin_nets": "{{env `ADMIN_NETS`}}",
-    "dnc_ips":    "{{env `DNSCACHE_IPS`}}",
-    "system":     "efw",
-    "build_ts":   "{{timestamp}}"
+    "cm_ip":		"{{env `CABLE_MODEM_IP`}}",
+    "admin_nets":	"{{env `ADMIN_NETS`}}",
+    "dnc_ips":		"{{env `DNSCACHE_IPS`}}",
+    "system":		"efw",
+    "disk_size_mb":	"9216",
+    "qemu_disk_format":	"qcow2"
   },
   "builders":
   [
     {
-      "type": "qemu",
-      "iso_url": "https://{{user `mirror`}}/pub/OpenBSD/6.0/amd64/install60.iso",
-      "iso_checksum": "a9b6b812cb456f11ba4362e232efdd5f0c47868f4281e383ecee77541b54498c",
-      "iso_checksum_type": "sha256",
-      "boot_wait": "20s",
-      "http_directory": "{{user `system`}}-files",
-      "boot_command": "a<enter><wait5>http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf<enter>",
-      "shutdown_command": "doas -u root shutdown -hp now",
-      "headless": true,
-      "ssh_username": "packer",
-      "ssh_password": "packer",
-      "disk_size": "9216",
-      "vm_name": "system.qcow2",
-      "output_directory": "output-qemu-{{user `system`}}"
+      "type":			"qemu",
+      "headless":		"{{user `packer_qemu_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"system.{{user `qemu_disk_format`}}",
+      "format":			"{{user `qemu_disk_format`}}",
+      "output_directory":	"output-qemu-{{user `system`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "http_directory":		"{{user `system`}}-files",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
     }
   ],
   "provisioners":
@@ -37,14 +38,9 @@
       "destination": "/tmp/doas.conf"
     },
     {
-      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "execute_command": "echo packer {{user `obsd_su_pipe`}} 'env {{ .Vars }} {{ .Path }}'",
       "type": "shell",
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
-    },
-    {
-      "type": "file",
-      "source": "shared/openbsd/redist/openup",
-      "destination": "/tmp/openup"
     },
     {
       "environment_vars":
@@ -52,15 +48,14 @@
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
-        "MIRROR={{user `mirror`}}"
+        "MIRROR={{user `mirrors_openbsd`}}"
       ],
-      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "execute_command": "{{user `chmod_x`}} {{ .Path }}; {{user `obsd_doas`}} {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
         "shared/openbsd/stamp.sh",
-        "shared/openbsd/environs.sh",
-        "shared/openbsd/openup.sh"
+        "shared/openbsd/environs.sh"
       ]
     },
     {

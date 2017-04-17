@@ -1,0 +1,43 @@
+{
+  "packer_qemu_comment":		"settings for qemu",
+  "packer_qemu_ovmfarg":		"file=/usr/share/edk2.git/ovmf-x64/OVMF_CODE-pure-efi.fd,if=pflash,format=raw,unit=0,readonly=on",
+
+  "packer_guestos":	"guestos settings for hypervisors where supported",
+  "c7_vmware_guestos":	"centos-64",
+
+  "timing_comment":	"common os installation timeouts (how long to wait for ssh to show, how long to wait to start a boot command)",
+  "c7_inst_timeout":	"30m",
+  "obsd_boot_wait":	"20s",
+
+  "boot_strings_comment":	"common bootloader strings for boot_command",
+  "c7_bios_boot":	"<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
+  "c7_bios_boot2":	"<enter>",
+  "c7_efi_boot":	"c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
+  "c7_efi_boot2":	"<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>",
+  "obsd_boot":		"a<enter><wait5>",
+  "obsd_boot2":		"<enter>",
+
+  "iso_comment":	"iso locations and checksums",
+  "c7_netinstall":	"centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
+  "c7_netinstall_cksum":	"f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
+  "c7_netinstall_cksum_type":	"sha256",
+  "openbsd_install":    "pub/OpenBSD/6.1/amd64/install61.iso",
+  "openbsd_cksum":	"dfb4bf2408d993645ef9560e6913be48ca6e854322c42156954d4da93d450fd9",
+  "openbsd_cksum_type":	"sha256",
+
+  "ssh_comment":	"ssh usernames/passwords from the shared kickstarts here",
+  "c7_ssh_user":	"root",
+  "c7_ssh_pass":	"packer",
+  "obsd_ssh_user":	"packer",
+  "obsd_ssh_pass":	"packer",
+
+  "exec_comment":	"execution commands for operating systems",
+  "chmod_x":		"chmod +x ",
+  "obsd_su_pipe":	"| su root -c ",
+  "obsd_doas":		"doas env ",
+
+  "shutdown_comment":	"shutdown commands for operating systems",
+  "c7_shutdown":	"poweroff",
+  "obsd_shutdown":	"doas -u root shutdown -hp now"
+
+}
