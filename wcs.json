@@ -11,7 +11,11 @@
     "vmware_host": "{{ env `PACKER_ESX_HOST`}}",
     "vmware_user": "{{ env `PACKER_ESX_USER`}}",
     "esx_password": "{{ env `PACKER_ESX_PASS`}}",
-    "vmware_remote_network": "{{ env `PACKER_ESX_VPG`}}"
+    "vmware_remote_network": "{{ env `PACKER_ESX_VPG`}}",
+    "bios_boot": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
+    "bios_boot2": "<enter>",
+    "efi_boot": "c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
+    "efi_boot2": "<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>"
   },
   "builders":
   [
@@ -31,7 +35,7 @@
       "ssh_timeout": "30m",
       "ssh_username": "root",
       "ssh_password": "packer",
-      "boot_command": "c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>",
+      "boot_command": "{{user `efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0{{user `efi_boot2`}}",
       "shutdown_command": "poweroff",
       "headless": true,
       "disk_size": "9216",
@@ -48,7 +52,7 @@
       "ssh_username": "root",
       "ssh_password": "packer",
       "guest_os_type": "centos-64",
-      "boot_command": "<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg<enter>",
+      "boot_command": "{{user `efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg{{user `efi_boot2`}}",
       "shutdown_command": "poweroff",
       "headless": "{{user `vmw_headless`}}",
       "disk_size": "9216",
@@ -62,6 +66,7 @@
       "vnc_disable_password": true,
       "keep_registered": true,
       "vmx_data": {
+        "firmware": "efi",
         "virtualhw.version": "10",
         "scsi0.virtualdev": "pvscsi",
         "ethernet0.virtualdev": "vmxnet3",
