@@ -33,6 +33,7 @@ for x in ${PACKER_ENV_DIR}/* ; do
   pkname=$(basename "${x}")
   read pkdata < "${x}"
   if [ "${pkdata:0:1}" == '$' ] ; then
+    pkdata=${pkdata:1:${#pkdata}}
     PACKER_BUILD_FLAGS+=" -var ${pkname}=${!pkdata}"
   else
     PACKER_BUILD_FLAGS+=" -var ${pkname}=${pkdata}"
