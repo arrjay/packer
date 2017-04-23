@@ -2,6 +2,7 @@
   "variables": {
     "cm_ip":		"{{env `CABLE_MODEM_IP`}}",
     "admin_nets":	"{{env `ADMIN_NETS`}}",
+    "internal_efw_ip":  "{{env `EFW_INTERNAL_IP`}}",
     "system":		"efw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
@@ -69,13 +70,16 @@
       "environment_vars":
       [
         "CABLE_MODEM_IP={{user `cm_ip`}}",
-        "ADMIN_NETS={{user `admin_nets`}}"
+        "ADMIN_NETS={{user `admin_nets`}}",
+        "TRANSIT_IP={{user `internal_efw_ip`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
-        "{{user `system`}}-files/pf-rules.sh"
+        "{{user `system`}}-files/pf-rules.sh",
+        "{{user `system`}}-files/disable-ipv6.sh",
+        "{{user `system`}}-files/transit-if.sh"
       ]
     },
     {
