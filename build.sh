@@ -45,4 +45,4 @@ packer version
 set -x
 packer build \
   $PACKER_BUILD_FLAGS \
-  -var-file packer/vars2.json packer/wcs.json
+  -var-file packer/vars2.json "${1}"
