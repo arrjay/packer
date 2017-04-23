@@ -28,6 +28,38 @@
       "shutdown_command":	"{{user `obsd_shutdown`}}",
       "ssh_username":		"{{user `obsd_ssh_user`}}",
       "ssh_password":		"{{user `obsd_ssh_pass`}}"
+    },
+    {
+      "type":			"vmware-iso",
+      "vmx_data":
+      {
+        "ethernet0.virtualdev":		"vmxnet3",
+        "ethernet0.networkName":	"{{user `packer_esx_remote_network`}}"
+      },
+      "headless":		"{{user `packer_vmw_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"{{user `system`}}-{{user `build_ts`}}",
+      "output_directory":	"output-vmware-{{user `system`}}",
+      "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+
+      "remote_type":		"{{user `packer_esx_remote_type`}}",
+      "remote_host":		"{{user `packer_esx_remote_host`}}",
+      "remote_username":	"{{user `packer_esx_remote_user`}}",
+      "remote_password":	"{{user `packer_esx_remote_pass`}}",
+      "remote_datastore":	"{{user `packer_esx_remote_datastore`}}",
+      "vnc_disable_password":	"{{user `packer_vmware_vnc_passwordless`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "http_directory":		"{{user `system`}}-files",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
     }
   ],
   "provisioners":
