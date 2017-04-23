@@ -1,0 +1,52 @@
+{
+  "variables": {
+    "iso_url": "http://mko.wcs.bbxn.us/centos/6/isos/x86_64/CentOS-6.9-x86_64-netinstall.iso",
+    "iso_checksum": "6b2cbec908708476389b143841a8e73462506de0744bda8b4192d3655d5bb8d2",
+    "iso_checksum_type": "sha256"
+  },
+  "builders": [
+    {
+      "type": "qemu",
+      "headless": true,
+      "qemuargs":
+      [
+        [ "-serial", "file:{{user `system`}}-build-console.log" ]
+      ],      
+      "disk_size": "9216",
+      "iso_url": "{{ user `iso_url` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_timeout": "60m",
+      "shutdown_command": "poweroff",
+      "http_directory": "c6-files",
+      "boot_command": "<esc><wait>vmlinuz initrd=initrd.img ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg console=ttyS0<enter>"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "mkdir /usr/share/dracut/modules.d/50growpart",
+        "printf 'omit_dracutmodules+\\075\\042redhat-i18n\\042\\n' >> /etc/dracut.conf"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "parse-growpart.sh",
+      "destination": "/usr/share/dracut/modules.d/50growpart/parse-growpart.sh"
+    },
+    {
+      "type": "file",
+      "source": "dracut-install.sh",
+      "destination": "/usr/share/dracut/modules.d/50growpart/install"
+    },
+    {
+      "type": "shell",
+      "inline": [ "yum -y install epel-release && yum -y install cloud-utils-growpart && chmod a+rx /usr/share/dracut/modules.d/50growpart/* && dracut -v -f",
+                  "sed -i -e 's/rhgb quiet/growpart=vda2 growpart=sda2 growpart=xvda2 growpart=hda2/' /boot/grub/grub.conf"
+                ]
+    }
+  ]
+}
