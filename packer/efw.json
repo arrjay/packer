@@ -94,6 +94,7 @@
       "scripts":
       [
         "shared/openbsd/stamp.sh",
+        "shared/openbsd/vgacon.sh",
         "shared/openbsd/environs.sh"
       ]
     },
