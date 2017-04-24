@@ -1,11 +1,14 @@
 {
   "variables": {
     "system":			"ifw",
+    "internal_efw_ip":		"{{env `EFW_INTERNAL_IP`}}",
     "ifw1_netmgmt_ip":		"{{env `IFW1_NETMGMT_IP`}}",
     "ifw1_user_ip":		"{{env `IFW1_USER_IP`}}",
     "ifw1_dmz_ip":		"{{env `IFW1_DMZ_IP`}}",
     "ifw1_virt_host_ip":	"{{env `IFW1_VIRTHOST_IP`}}",
     "ifw1_restricteduser_ip":	"{{env `IFW1_RESTRICTEDUSER_IP`}}",
+    "as_number":		"{{env `AS_NUMBER`}}",
+    "bgp_router_id":		"{{env `IFW1_ROUTER_ID`}}",
     "disk_size_mb":		"9216",
     "qemu_disk_format":		"qcow2"
   },
@@ -118,6 +121,9 @@
     {
       "environment_vars":
       [
+        "AS_NUMBER={{user `as_number`}}",
+        "BGP_ROUTER_ID={{user `bgp_router_id`}}",
+        "INTERNAL_EFW_IP={{user `internal_efw_ip`}}",
         "NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
         "ST_USER_IP={{user `ifw1_user_ip`}}",
         "DMZ_IP={{user `ifw1_dmz_ip`}}",
@@ -129,6 +135,7 @@
       "scripts":
       [
         "shared/openbsd/disable-ipv6.sh",
+        "ifw-files/bgpd.sh",
         "ifw-files/interfaces.sh"
       ]
     },
