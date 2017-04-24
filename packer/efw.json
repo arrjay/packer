@@ -3,6 +3,7 @@
     "cm_ip":		"{{env `CABLE_MODEM_IP`}}",
     "admin_nets":	"{{env `ADMIN_NETS`}}",
     "internal_efw_ip":  "{{env `EFW_INTERNAL_IP`}}",
+    "transit_dhcp_gap":	"{{env `TRANSIT_DHCP_GAP`}}",
     "system":		"efw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
@@ -109,6 +110,7 @@
       [
         "CABLE_MODEM_IP={{user `cm_ip`}}",
         "ADMIN_NETS={{user `admin_nets`}}",
+        "TRANSIT_DHCP_GAP={{user `transit_dhcp_gap`}}",
         "TRANSIT_IP={{user `internal_efw_ip`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
@@ -117,7 +119,8 @@
       [
         "shared/openbsd/disable-ipv6.sh",
         "{{user `system`}}-files/pf-rules.sh",
-        "{{user `system`}}-files/transit-if.sh"
+        "{{user `system`}}-files/transit-if.sh",
+        "{{user `system`}}-files/dhcpd.sh"
       ]
     },
     {
