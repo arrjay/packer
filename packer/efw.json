@@ -41,6 +41,12 @@
       "vm_name":		"{{user `system`}}-{{user `build_ts`}}",
       "output_directory":	"output-vmware-{{user `system`}}-{{user `build_ts`}}",
       "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+      "vmx_data_post":
+      {
+        "memsize":			"128",
+        "ethernet1.present":		"TRUE",
+        "ethernet1.virtualdev":		"vmxnet3"
+      },
 
       "remote_type":		"{{user `packer_esx_remote_type`}}",
       "remote_host":		"{{user `packer_esx_remote_host`}}",
