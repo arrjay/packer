@@ -1,8 +1,13 @@
 {
   "variables": {
-    "system":		"ifw",
-    "disk_size_mb":	"9216",
-    "qemu_disk_format":	"qcow2"
+    "system":			"ifw",
+    "ifw1_netmgmt_ip":		"{{env `IFW1_NETMGMT_IP`}}",
+    "ifw1_user_ip":		"{{env `IFW1_USER_IP`}}",
+    "ifw1_dmz_ip":		"{{env `IFW1_DMZ_IP`}}",
+    "ifw1_virt_host_ip":	"{{env `IFW1_VIRTHOST_IP`}}",
+    "ifw1_restricteduser_ip":	"{{env `IFW1_RESTRICTEDUSER_IP`}}",
+    "disk_size_mb":		"9216",
+    "qemu_disk_format":		"qcow2"
   },
   "builders":
   [
@@ -42,7 +47,15 @@
       {
         "memsize":			"128",
         "ethernet1.present":		"TRUE",
-        "ethernet1.virtualdev":		"vmxnet3"
+        "ethernet1.virtualdev":		"vmxnet3",
+        "ethernet2.present":		"TRUE",
+        "ethernet2.virtualdev":		"vmxnet3",
+        "ethernet3.present":		"TRUE",
+        "ethernet3.virtualdev":		"vmxnet3",
+        "ethernet4.present":		"TRUE",
+        "ethernet4.virtualdev":		"vmxnet3",
+        "ethernet5.present":		"TRUE",
+        "ethernet5.virtualdev":		"vmxnet3"
       },
 
       "remote_type":		"{{user `packer_esx_remote_type`}}",
@@ -90,6 +103,7 @@
       "scripts":
       [
         "shared/openbsd/stamp.sh",
+        "shared/openbsd/vgacon.sh",
         "shared/openbsd/environs.sh"
       ]
     },
@@ -104,15 +118,18 @@
     {
       "environment_vars":
       [
-        "CABLE_MODEM_IP={{user `cm_ip`}}",
-        "ADMIN_NETS={{user `admin_nets`}}",
-        "TRANSIT_IP={{user `internal_efw_ip`}}"
+        "NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
+        "ST_USER_IP={{user `ifw1_user_ip`}}",
+        "DMZ_IP={{user `ifw1_dmz_ip`}}",
+        "VIRTHOST_IP={{user `ifw1_virt_host_ip`}}",
+        "RES_USER_IP={{user `ifw1_restricteduser_ip`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/disable-ipv6.sh"
+        "shared/openbsd/disable-ipv6.sh",
+        "ifw-files/interfaces.sh"
       ]
     },
     {
