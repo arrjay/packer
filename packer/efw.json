@@ -5,7 +5,6 @@
     "internal_efw_ip":  "{{env `EFW_INTERNAL_IP`}}",
     "transit_dhcp_gap":	"{{env `TRANSIT_DHCP_GAP`}}",
     "router_id":	"{{env `EFW_ROUTER_ID`}}",
-    "bgp_md5_pass":	"{{env `BGP_MD5_PASS`}}",
     "as_number":	"{{env `AS_NUMBER`}}",
     "system":		"efw",
     "disk_size_mb":	"9216",
@@ -115,7 +114,6 @@
         "CABLE_MODEM_IP={{user `cm_ip`}}",
         "AS_NUMBER={{user `as_number`}}",
         "BGP_ROUTER_ID={{user `router_id`}}",
-        "BGP_MD5_PASS={{user `bgp_md5_pass`}}",
         "ADMIN_NETS={{user `admin_nets`}}",
         "TRANSIT_DHCP_GAP={{user `transit_dhcp_gap`}}",
         "TRANSIT_IP={{user `internal_efw_ip`}}"
