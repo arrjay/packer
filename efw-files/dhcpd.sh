@@ -43,7 +43,6 @@ rcctl set dhcpd flags $ifname
 {
   printf 'subnet %s netmask %s {\n' "${subnet}" "${tf_mask}"
   printf ' option subnet-mask %s;\n' "${tf_mask}"
-  printf ' option routers %s;\n' "${tf_addr}"
   printf ' range %s %s;\n' "${next_ip}" "${last_ip}"
   printf '}\n'
 } > /etc/dhcpd.conf
