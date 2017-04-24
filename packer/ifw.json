@@ -1,9 +1,6 @@
 {
   "variables": {
-    "cm_ip":		"{{env `CABLE_MODEM_IP`}}",
-    "admin_nets":	"{{env `ADMIN_NETS`}}",
-    "internal_efw_ip":  "{{env `EFW_INTERNAL_IP`}}",
-    "system":		"efw",
+    "system":		"ifw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
   },
@@ -115,9 +112,7 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/disable-ipv6.sh",
-        "{{user `system`}}-files/pf-rules.sh",
-        "{{user `system`}}-files/transit-if.sh"
+        "shared/openbsd/disable-ipv6.sh"
       ]
     },
     {
