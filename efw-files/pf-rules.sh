@@ -54,7 +54,7 @@ visitors="${visitors} ${CABLE_MODEM_IP}/32"
   # filter continue
   printf 'pass in on egress inet proto icmp to (egress) icmp-type echoreq\n'
   printf 'block in on transit from !<admin> to %s\n' "${CABLE_MODEM_IP}" 
-  printf 'pass in on transit\n'
+  printf 'pass on transit\n'
   printf 'pass out on egress to !<martians>\n'
 } > /etc/pf.conf
 
