@@ -2,7 +2,7 @@
 
 set -e
 
-pkg_add go
+pkg_add go gmake
 
 mkdir -p /usr/local/src
 mkdir -p /usr/local/dist
@@ -16,5 +16,5 @@ fi
 set -e
 tar xzf /usr/local/dist/consul-v0.8.1.tar.gz -C /usr/local/src
 cd /usr/local/src/consul-0.8.1
-make
+gmake
 false
