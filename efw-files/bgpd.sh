@@ -18,8 +18,10 @@ listener=$(echo ${TRANSIT_IP}|sed 's@/'${cidr}'@@')
   printf 'nexthop qualify via bgp\n\n'
   printf 'listen on %s\n\n' "${listener}"
   printf 'neighbor %s/%s {\n' "${subnet}" "${cidr}"
+  printf ' remote-as %s\n' "${AS_NUMBER}"
   printf ' announce IPv4 unicast\n'
   printf ' announce default-route\n'
+  printf ' ttl-security yes\n'
   printf '}\n'
 } > /etc/bgpd.conf
 

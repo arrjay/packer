@@ -19,6 +19,7 @@ receiver=$(echo ${INTERNAL_EFW_IP}|sed 's@/'${rcv_cidr}'@@')
   printf 'neighbor %s {\n' "${receiver}"
   printf ' remote-as %s\n' "${AS_NUMBER}"
   printf ' announce IPv4 unicast\n'
+  printf ' ttl-security yes\n'
   printf '}\n'
 } > /etc/bgpd.conf
 
