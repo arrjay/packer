@@ -1,0 +1,19 @@
+diff --git a/scripts/build.sh b/scripts/build.sh
+index 2011bd5..ec15c41 100755
+--- a/scripts/build.sh
++++ b/scripts/build.sh
+@@ -37,12 +37,9 @@ fi
+ 
+ # Build!
+ echo "==> Building..."
+-"`which gox`" \
+-    -os="${XC_OS}" \
+-    -arch="${XC_ARCH}" \
+-    -osarch="!darwin/arm" \
++cd $DIR
++go build -o "pkg/$(go env GOOS)_$(go env GOARCH)/consul" -i \
+     -ldflags "-X ${GIT_IMPORT}.GitCommit='${GIT_COMMIT}${GIT_DIRTY}' -X ${GIT_IMPORT}.GitDescribe='${GIT_DESCRIBE}'" \
+-    -output "pkg/{{.OS}}_{{.Arch}}/consul" \
+     -tags="${GOTAGS}" \
+     .
+ 
