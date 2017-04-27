@@ -24,6 +24,7 @@ lcs - Web cache. Squid configured as backwards and forwards proxy, connected
       to wcs.
 log - statistics collection and logging endpoint. syslog + snmp / misc polls.
 kam - Key Access Manager. Typically offline, for CA + other crypto bits.
+quo - pocket server (raspi!) for a consul, backup dhcp.
 
 Misc
 ====

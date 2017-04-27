@@ -1,0 +1,18 @@
+{
+  "builders": [
+    {
+      "type": "null",
+      "ssh_host": "127.0.0.1",
+      "ssh_username": "pi",
+      "ssh_port": "8222",
+      "ssh_private_key_file": "output-qemu-quo/workfiles/ssh_user_rsa_key",
+      "ssh_timeout": "20m"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": "sudo apt update && sudo apt -y upgrade && sudo apt -y install at && echo 'sudo poweroff' | at now + 1 minutes"
+    }
+  ]
+}
