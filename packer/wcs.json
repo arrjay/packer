@@ -79,7 +79,7 @@
       [
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
-        "MIRROR={{user `mirror`}}"
+        "MIRROR={{user `mirrors_kernel_org`}}"
       ],
       "type": "shell",
       "scripts":
