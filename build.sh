@@ -24,7 +24,7 @@ for x in ${PASSWORD_STORE_DIR}/*.gpg ; do
 done
 
 # this starts setting packer variables
-PACKER_BUILD_FLAGS="-var build_sha=$(git rev-parse HEAD)"
+PACKER_BUILD_FLAGS+=" -var build_sha=$(git rev-parse HEAD)"
 PACKER_BUILD_FLAGS+=" -var build_tag=$(git describe --exact-match HEAD 2> /dev/null)"
 PACKER_BUILD_FLAGS+=" -var build_ts=${BUILD_TIMESTAMP}"
 
