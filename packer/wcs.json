@@ -79,14 +79,15 @@
       [
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
+        "SYSTEM_TAG={{user `system`}}",
         "MIRROR={{user `mirrors_kernel_org`}}"
       ],
       "type": "shell",
       "scripts":
       [
-        "wcs-files/stamp.sh",
-        "wcs-files/epel.sh",
-        "wcs-files/augeas.sh"
+        "shared/centos/stamp.sh",
+        "shared/centos/epel.sh",
+        "shared/centos/augeas.sh"
       ]
     },
     {
