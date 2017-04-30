@@ -67,16 +67,16 @@ restrict_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_RESTRICTEDUSER_IP}" | cut 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}"
   printf ' range %s %s;\n}\n' "${netmgmt_min}" "${netmgmt_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s\n' "${user_net}" "${user_mask}" "${user_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${user_net}" "${user_mask}" "${user_mask}"
   printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}"
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}"
   printf ' range %s %s;\n}\n' "${vhost_min}" "${vhost_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}"
   printf ' range %s %s;\n}\n' "${restrict_min}" "${restrict_max}"
 } > /etc/dhcp/dhcpd.conf
 
