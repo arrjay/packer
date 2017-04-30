@@ -41,43 +41,50 @@ netmgmt_net=$(ipcalc -n "${IFW1_NETMGMT_IP}" | cut -f2 -d=)
 netmgmt_mask=$(ipcalc -m "${IFW1_NETMGMT_IP}" | cut -f2 -d=)
 netmgmt_min=$(dec2ip $(($(ip2dec ${netmgmt_net}) + ${STANDARD_DHCP_GAP})))
 netmgmt_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_NETMGMT_IP}" | cut -f2 -d=)) - 1)))
+netmgmt_rtr=$(dirname "${IFW1_NETMGMT_IP}")
 
 user_net=$(ipcalc -n "${IFW1_USER_IP}" | cut -f2 -d=)
 user_mask=$(ipcalc -m "${IFW1_USER_IP}" | cut -f2 -d=)
 user_min=$(dec2ip $(($(ip2dec ${user_net}) + ${STANDARD_DHCP_GAP})))
 user_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_USER_IP}" | cut -f2 -d=)) - 1)))
+user_rtr=$(dirname "${IFW1_USER_IP}")
 
 dmz_net=$(ipcalc -n "${IFW1_DMZ_IP}" | cut -f2 -d=)
 dmz_mask=$(ipcalc -m "${IFW1_DMZ_IP}" | cut -f2 -d=)
 dmz_min=$(dec2ip $(($(ip2dec ${dmz_net}) + ${STANDARD_DHCP_GAP})))
 dmz_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_DMZ_IP}" | cut -f2 -d=)) - 1)))
+dmz_rtr=$(dirname "${IFW1_DMZ_IP}")
 
 vhost_net=$(ipcalc -n "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)
 vhost_mask=$(ipcalc -m "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)
 vhost_min=$(dec2ip $(($(ip2dec ${vhost_net}) + ${STANDARD_DHCP_GAP})))
 vhost_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)) - 1)))
+vhost_rtr=$(dirname "${IFW1_VIRTHOST_IP}")
 
 restrict_net=$(ipcalc -n "${IFW1_RESTRICTEDUSER_IP}" | cut -f2 -d=)
 restrict_mask=$(ipcalc -m "${IFW1_RESTRICTEDUSER_IP}" | cut -f2 -d=)
 restrict_min=$(dec2ip $(($(ip2dec ${restrict_net}) + ${STANDARD_DHCP_GAP})))
 restrict_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_RESTRICTEDUSER_IP}" | cut -f2 -d=)) - 1)))
+restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
 
 {
   printf 'subnet %s netmask %s {\n}\n' "${mynet}" "${mymask}"
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}"
+
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
   printf ' range %s %s;\n}\n' "${netmgmt_min}" "${netmgmt_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${user_net}" "${user_mask}" "${user_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${user_net}" "${user_mask}" "${user_mask}" "${user_rtr}"
   printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}" "${vhost_rtr}"
   printf ' range %s %s;\n}\n' "${vhost_min}" "${vhost_max}"
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}"
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}" "${restrict_rtr}"
   printf ' range %s %s;\n}\n' "${restrict_min}" "${restrict_max}"
+
 } > /etc/dhcp/dhcpd.conf
 
 dhcpd -t

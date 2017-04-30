@@ -54,7 +54,7 @@
       "vm_name":		"{{user `system`}}-{{user `build_ts`}}",
       "output_directory":	"output-vmware-{{user `system`}}",
       "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
-      "vmx_data_post":		{ "vcpu.hotadd": true, "mem.hotadd": true },
+      "vmx_data_post":		{ "vcpu.hotadd": true, "mem.hotadd": true, "ethernet0.networkName": "virtual2" },
 
       "remote_type":		"{{user `packer_esx_remote_type`}}",
       "remote_host":		"{{user `packer_esx_remote_host`}}",
