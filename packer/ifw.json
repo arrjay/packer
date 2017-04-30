@@ -1,6 +1,7 @@
 {
   "variables": {
     "system":			"ifw",
+    "nms1_internal_ip":		"{{env `NMS1_INTERNAL_IP`}}",
     "internal_efw_ip":		"{{env `EFW_INTERNAL_IP`}}",
     "ifw1_netmgmt_ip":		"{{env `IFW1_NETMGMT_IP`}}",
     "ifw1_user_ip":		"{{env `IFW1_USER_IP`}}",
@@ -49,6 +50,7 @@
       "vmx_data_post":
       {
         "memsize":			"128",
+        "ethernet0.networkName":	"virtual1",
         "ethernet1.present":		"TRUE",
         "ethernet1.virtualdev":		"vmxnet3",
         "ethernet2.present":		"TRUE",
@@ -57,6 +59,7 @@
         "ethernet3.virtualdev":		"vmxnet3",
         "ethernet4.present":		"TRUE",
         "ethernet4.virtualdev":		"vmxnet3",
+        "ethernet4.networkName":	"virtual2",
         "ethernet5.present":		"TRUE",
         "ethernet5.virtualdev":		"vmxnet3"
       },
@@ -123,6 +126,7 @@
       [
         "AS_NUMBER={{user `as_number`}}",
         "BGP_ROUTER_ID={{user `bgp_router_id`}}",
+        "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
         "INTERNAL_EFW_IP={{user `internal_efw_ip`}}",
         "NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
         "ST_USER_IP={{user `ifw1_user_ip`}}",
