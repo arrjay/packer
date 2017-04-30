@@ -1,7 +1,14 @@
 {
   "variables": {
     "system":			"nms",
-    "disk_size_mb":		"9216"
+    "disk_size_mb":		"9216",
+    "ifw1_netmgmt_ip":		"{{ env `IFW1_NETMGMT_IP` }}",
+    "ifw1_user_ip":		"{{ env `IFW1_USER_IP` }}",
+    "ifw1_dmz_ip":		"{{ env `IFW1_DMZ_IP` }}",
+    "ifw1_virthost_ip":		"{{ env `IFW1_VIRTHOST_IP` }}",
+    "ifw1_restricteduser_ip":	"{{ env `IFW1_RESTRICTEDUSER_IP` }}",
+    "dhcp_gap":			"{{ env `STANDARD_DHCP_GAP` }}",
+    "ipaddress":		"{{ env `NMS1_INTERNAL_IP` }}"
   },
   "builders":
   [
@@ -88,9 +95,20 @@
       ]
     },
     {
+      "environment_vars":
+      [
+        "STANDARD_DHCP_GAP={{user `dhcp_gap`}}",
+        "IFW1_NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
+        "IFW1_USER_IP={{user `ifw1_user_ip`}}",
+        "IFW1_DMZ_IP={{user `ifw1_dmz_ip`}}",
+        "IFW1_VIRTHOST_IP={{user `ifw1_virthost_ip`}}",
+        "IFW1_RESTRICTEDUSER_IP={{user `ifw1_restricteduser_ip`}}",
+        "IPADDRESS={{user `ipaddress`}}"
+      ],
       "type": "shell",
       "scripts":
       [
+        "{{user `system`}}-files/interfaces.sh",
         "{{user `system`}}-files/dhcpd.sh"
       ]
     }
