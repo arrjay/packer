@@ -31,6 +31,8 @@ dec2ip() {
 
 yum install -y dhcp
 
+std_dns1=$(dirname "${DNSFW1_IP}")
+
 mycidr=$(basename "${IPADDRESS}")
 myaddr=$(echo "${IPADDRESS}" | sed 's@/'"${mycidr}"'@@')
 mynet=$(ipcalc -n "${IPADDRESS}" | cut -f2 -d=)
@@ -71,18 +73,23 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
   printf 'subnet %s netmask %s {\n}\n' "${mynet}" "${mymask}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${netmgmt_min}" "${netmgmt_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${user_net}" "${user_mask}" "${user_mask}" "${user_rtr}"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}" "${vhost_rtr}"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${vhost_min}" "${vhost_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}" "${restrict_rtr}"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${restrict_min}" "${restrict_max}"
 
 } > /etc/dhcp/dhcpd.conf

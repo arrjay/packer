@@ -2,6 +2,7 @@
   "variables": {
     "system":			"nms",
     "disk_size_mb":		"9216",
+    "dnsfw1_ip":		"{{ env `NMS1_INTERNAL_IP` }}",
     "ifw1_netmgmt_ip":		"{{ env `IFW1_NETMGMT_IP` }}",
     "ifw1_user_ip":		"{{ env `IFW1_USER_IP` }}",
     "ifw1_dmz_ip":		"{{ env `IFW1_DMZ_IP` }}",
@@ -98,6 +99,7 @@
       "environment_vars":
       [
         "STANDARD_DHCP_GAP={{user `dhcp_gap`}}",
+        "DNSFW1_IP={{user `dnsfw1_ip`}}",
         "IFW1_NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
         "IFW1_USER_IP={{user `ifw1_user_ip`}}",
         "IFW1_DMZ_IP={{user `ifw1_dmz_ip`}}",
@@ -109,6 +111,7 @@
       "scripts":
       [
         "{{user `system`}}-files/interfaces.sh",
+        "{{user `system`}}-files/named.sh",
         "{{user `system`}}-files/dhcpd.sh"
       ]
     }
