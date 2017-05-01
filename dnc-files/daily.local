@@ -1,0 +1,5 @@
+unbound-anchor
+
+if [ $? -eq 0 ] ; then
+  rcctl restart unbound
+fi

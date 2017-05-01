@@ -104,6 +104,16 @@
       ]
     },
     {
+      "type": "file",
+      "source": "{{user `system`}}-files/daily.local",
+      "destination": "/tmp/daily.local"
+    },
+    {
+      "type": "file",
+      "source": "{{user `system`}}-files/unbound.conf",
+      "destination": "/tmp/unbound.conf"
+    },
+    {
       "environment_vars":
       [
         "IPADDR={{user `ipaddr`}}",
@@ -114,6 +124,7 @@
       "scripts":
       [
         "shared/openbsd/disable-ipv6.sh",
+        "{{user `system`}}-files/daily.sh",
         "{{user `system`}}-files/interfaces.sh",
         "{{user `system`}}-files/unbound.sh"
       ]
