@@ -2,7 +2,7 @@
   "variables": {
     "system":			"nms",
     "disk_size_mb":		"9216",
-    "dnsfw1_ip":		"{{ env `NMS1_INTERNAL_IP` }}",
+    "dnsfw1_ip":		"{{ env `DNC1_IP` }}",
     "ifw1_netmgmt_ip":		"{{ env `IFW1_NETMGMT_IP` }}",
     "ifw1_user_ip":		"{{ env `IFW1_USER_IP` }}",
     "ifw1_dmz_ip":		"{{ env `IFW1_DMZ_IP` }}",
