@@ -28,6 +28,7 @@ dec2ip() {
 [ ! -z "${IFW1_VIRTHOST_IP}" ]
 [ ! -z "${IFW1_RESTRICTEDUSER_IP}" ]
 [ ! -z "${STANDARD_DHCP_GAP}" ]
+[ ! -z "${VIRTHOST_DHCP_GAP}" ]
 
 yum install -y dhcp
 
@@ -59,7 +60,7 @@ dmz_rtr=$(dirname "${IFW1_DMZ_IP}")
 
 vhost_net=$(ipcalc -n "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)
 vhost_mask=$(ipcalc -m "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)
-vhost_min=$(dec2ip $(($(ip2dec ${vhost_net}) + ${STANDARD_DHCP_GAP})))
+vhost_min=$(dec2ip $(($(ip2dec ${vhost_net}) + ${VIRTHOST_DHCP_GAP})))
 vhost_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_VIRTHOST_IP}" | cut -f2 -d=)) - 1)))
 vhost_rtr=$(dirname "${IFW1_VIRTHOST_IP}")
 

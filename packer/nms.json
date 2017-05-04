@@ -9,6 +9,7 @@
     "ifw1_virthost_ip":		"{{ env `IFW1_VIRTHOST_IP` }}",
     "ifw1_restricteduser_ip":	"{{ env `IFW1_RESTRICTEDUSER_IP` }}",
     "dhcp_gap":			"{{ env `STANDARD_DHCP_GAP` }}",
+    "virthost_dhcp_gap":	"{{ env `VIRTHOST_DHCP_GAP` }}",
     "ipaddress":		"{{ env `NMS1_INTERNAL_IP` }}"
   },
   "builders":
@@ -99,6 +100,7 @@
       "environment_vars":
       [
         "STANDARD_DHCP_GAP={{user `dhcp_gap`}}",
+        "VIRTHOST_DHCP_GAP={{user `virthost_dhcp_gap`}}",
         "DNSFW1_IP={{user `dnsfw1_ip`}}",
         "IFW1_NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
         "IFW1_USER_IP={{user `ifw1_user_ip`}}",
