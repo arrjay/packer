@@ -32,6 +32,10 @@ visitors="${visitors} ${CABLE_MODEM_IP}/32"
   printf 'set skip on lo\n'
   printf '\n'
 
+  # normalization
+  printf 'match in all scrub (no-df)\n'
+  printf '\n'
+
   # diverts
   printf 'anchor "ftp-proxy/*"\n'
   printf 'pass in on transit inet proto tcp to port ftp flags S/SA modulate state divert-to 127.0.0.1 port 8021\n'
