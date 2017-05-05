@@ -45,10 +45,6 @@ visitors="${visitors} ${CABLE_MODEM_IP}/32"
   printf 'block return\n'
   printf '\n'
 
-  # antispoof
-  printf 'antispoof quick for { lo }\n'
-  printf '\n'
-
   # filter continue
   printf 'pass in on egress inet proto icmp to (egress) icmp-type echoreq\n'
   printf 'block in quick on transit from !<admin> to %s\n' "${CABLE_MODEM_IP}" 
