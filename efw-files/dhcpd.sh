@@ -8,8 +8,8 @@ pkg_add sipcalc
 [ ! -z "${TRANSIT_DHCP_GAP}" ]
 
 case "${PACKER_BUILDER_TYPE}" in
-  qemu)		ifname=vio1 ;;
-  vmware*)	ifname=vmx1 ;;
+  qemu)		ifname=vio2 ;;
+  vmware*)	ifname=vmx2 ;;
   *)		false ;;
 esac
 

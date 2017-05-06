@@ -48,7 +48,9 @@
       {
         "memsize":			"128",
         "ethernet1.present":		"TRUE",
-        "ethernet1.virtualdev":		"vmxnet3"
+        "ethernet1.virtualdev":		"vmxnet3",
+        "ethernet2.present":		"TRUE",
+        "ethernet2.virtualdev":		"vmxnet3"
       },
 
       "remote_type":		"{{user `packer_esx_remote_type`}}",
@@ -123,6 +125,7 @@
       "scripts":
       [
         "shared/openbsd/disable-ipv6.sh",
+        "shared/openbsd/vmm-if.sh",
         "{{user `system`}}-files/pf-rules.sh",
         "{{user `system`}}-files/transit-if.sh",
         "{{user `system`}}-files/bgpd.sh",
