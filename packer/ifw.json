@@ -61,7 +61,9 @@
         "ethernet4.virtualdev":		"vmxnet3",
         "ethernet4.networkName":	"virtual2",
         "ethernet5.present":		"TRUE",
-        "ethernet5.virtualdev":		"vmxnet3"
+        "ethernet5.virtualdev":		"vmxnet3",
+        "ethernet6.present":		"TRUE",
+        "ethernet6.virtualdev":		"vmxnet3"
       },
 
       "remote_type":		"{{user `packer_esx_remote_type`}}",
@@ -139,6 +141,7 @@
       "scripts":
       [
         "shared/openbsd/disable-ipv6.sh",
+        "shared/openbsd/vmm-if.sh",
         "ifw-files/bgpd.sh",
         "ifw-files/interfaces.sh"
       ]

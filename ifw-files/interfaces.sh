@@ -21,49 +21,49 @@ esac
   printf 'inet %s\n' "${DMZ_IP}"
   printf '-inet6\n'
   printf 'group dmz\n'
-} > /etc/hostname.${ifbase}1
+} > /etc/hostname.${ifbase}2
 
 {
   printf 'inet %s\n' "${VIRTHOST_IP}"
   printf '-inet6\n'
   printf 'group virthosts\n'
-} > /etc/hostname.${ifbase}2
+} > /etc/hostname.${ifbase}3
 
 cp /etc/rc.d/dhcrelay /etc/rc.d/dhcrelay_virthosts
 
 rcctl enable dhcrelay_virthosts
-rcctl set dhcrelay_virthosts flags "-i ${ifbase}2 ${nms1_relay}"
+rcctl set dhcrelay_virthosts flags "-i ${ifbase}3 ${nms1_relay}"
 
 {
   printf 'inet %s\n' "${NETMGMT_IP}"
   printf '-inet6\n'
   printf 'group netmgmt\n'
-} > /etc/hostname.${ifbase}3
+} > /etc/hostname.${ifbase}4
 
 cp /etc/rc.d/dhcrelay /etc/rc.d/dhcrelay_netmgmt
 
 rcctl enable dhcrelay_netmgmt
-rcctl set dhcrelay_netmgmt flags "-i ${ifbase}3 ${nms1_relay}"
+rcctl set dhcrelay_netmgmt flags "-i ${ifbase}4 ${nms1_relay}"
 
 {
   printf 'inet %s\n' "${ST_USER_IP}"
   printf '-inet6\n'
   printf 'group standard\n'
-} > /etc/hostname.${ifbase}4
+} > /etc/hostname.${ifbase}5
 
 cp /etc/rc.d/dhcrelay /etc/rc.d/dhcrelay_stduser
 
 rcctl enable dhcrelay_stduser
-rcctl set dhcrelay_stduser flags "-i ${ifbase}4 ${nms1_relay}"
+rcctl set dhcrelay_stduser flags "-i ${ifbase}5 ${nms1_relay}"
 
 {
   printf 'inet %s\n' "${RES_USER_IP}"
   printf '-inet6\n'
   printf 'group restricted\n'
-} > /etc/hostname.${ifbase}5
+} > /etc/hostname.${ifbase}6
 
 cp /etc/rc.d/dhcrelay /etc/rc.d/dhcrelay_resuser
 
 rcctl enable dhcrelay_resuser
-rcctl set dhcrelay_resuser flags "-i ${ifbase}5 ${nms1_relay}"
+rcctl set dhcrelay_resuser flags "-i ${ifbase}6 ${nms1_relay}"
 
