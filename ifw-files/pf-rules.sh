@@ -33,12 +33,14 @@ esac
   printf 'pass in on { dmz virthosts netmgmt standard restricted } inet proto tcp to port ftp flags S/SA modulate state divert-to 127.0.0.1 port 8021\n'
   printf '\n'
 
+  # block ipv6 ra without logging
+  printf 'block drop quick inet6 proto icmp6 all icmp6-type { routeradv, routersol }\n'
   # filter start
   printf 'block return log\n'
   printf '\n'
 
   # antispoof
-  printf 'pass out quick on dmz proto udp from port 67 to %s port 67\n' "${NMS_NETWORK}"
+  printf 'pass out quick on dmz proto udp from port { 67, 68 } to %s port 67\n' "${NMS_NETWORK}"
   printf 'antispoof quick for { dmz virthosts netmgmt standard restricted vmm }\n'
   printf '\n'
 
@@ -62,6 +64,7 @@ esac
   printf 'pass proto { tcp, udp } from %s to any port 53\n' "${DNS_NETWORK}"
 
   # dhcp
+  printf 'pass proto icmp from %s to <martians> icmp-type echoreq\n' "${NMS_NETWORK}"
   for net in virthosts netmgmt standard restricted ; do
     printf 'pass in on %s proto udp from port 68 to port 67\n' "${net}"
   done
