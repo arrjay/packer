@@ -9,6 +9,7 @@
     "ifw1_virt_host_ip":	"{{env `IFW1_VIRTHOST_IP`}}",
     "ifw1_restricteduser_ip":	"{{env `IFW1_RESTRICTEDUSER_IP`}}",
     "as_number":		"{{env `AS_NUMBER`}}",
+    "vmm_range":		"{{env `VMM_RANGE`}}",
     "bgp_router_id":		"{{env `IFW1_ROUTER_ID`}}",
     "disk_size_mb":		"9216",
     "qemu_disk_format":		"qcow2"
@@ -128,6 +129,7 @@
       [
         "AS_NUMBER={{user `as_number`}}",
         "BGP_ROUTER_ID={{user `bgp_router_id`}}",
+        "VMM_RANGE={{user `vmm_range`}}",
         "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
         "INTERNAL_EFW_IP={{user `internal_efw_ip`}}",
         "NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",

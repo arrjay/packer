@@ -6,6 +6,7 @@
     "transit_dhcp_gap":	"{{env `TRANSIT_DHCP_GAP`}}",
     "router_id":	"{{env `EFW_ROUTER_ID`}}",
     "as_number":	"{{env `AS_NUMBER`}}",
+    "vmm_range":	"{{env `VMM_RANGE`}}",
     "system":		"efw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
@@ -116,6 +117,7 @@
         "CABLE_MODEM_IP={{user `cm_ip`}}",
         "AS_NUMBER={{user `as_number`}}",
         "BGP_ROUTER_ID={{user `router_id`}}",
+        "VMM_RANGE={{user `vmm_range`}}",
         "ADMIN_NETS={{user `admin_nets`}}",
         "TRANSIT_DHCP_GAP={{user `transit_dhcp_gap`}}",
         "TRANSIT_IP={{user `internal_efw_ip`}}"

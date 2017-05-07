@@ -12,6 +12,8 @@ set -e
 [ ! -z "${ST_USER_IP}" ]
 [ ! -z "${RES_USER_IP}" ]
 
+[ ! -z "${VMM_RANGE}" ]
+
 pkg_add sipcalc
 
 rcv_cidr=$(basename ${INTERNAL_EFW_IP})
@@ -41,6 +43,7 @@ res_user_net=$(sipcalc ${RES_USER_IP}|awk -F'- ' '$0 ~ "Network address" { print
   printf 'network %s/%s\n' "${st_user_net}" "${st_user_cidr}"
   printf 'network %s/%s\n' "${res_user_net}" "${res_user_cidr}"
   printf '\n'
+  printf 'deny from any prefix { %s }\n\n' "${VMM_RANGE}"
   printf 'nexthop qualify via bgp\n\n'
   printf 'neighbor %s {\n' "${receiver}"
   printf ' remote-as %s\n' "${AS_NUMBER}"
