@@ -1,0 +1,75 @@
+#!/bin/sh
+
+set -ex
+
+# okay I was mean and took advantage of set -e
+[ ! -z "${CABLE_MODEM_IP}" ]
+[ ! -z "${NMS_NETWORK}" ]
+[ ! -z "${DNS_NETWORK}" ]
+
+case "${PACKER_BUILDER_TYPE}" in
+  qemu)         transit=vio0 ;;
+  vmware*)      transit=vmx0 ;;
+  *)            false ;;
+esac
+
+{
+  # tables
+  printf 'table <martians> persist {\n'
+  for x in 0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 \
+           172.16.0.0/12 192.0.0.0/24 192.0.2.0/24 192.168.0.0/16 192.18.0.0/15 \
+           198.51.100.0/24 203.0.113.0/24
+   do
+     printf ' %s\n' "${x}"
+   done
+  printf '\n}\n'
+
+  # skips
+  printf 'set skip on lo\n'
+  printf '\n'
+
+  # diverts
+  printf 'anchor "ftp-proxy/*"\n'
+  printf 'pass in on { dmz virthosts netmgmt standard restricted } inet proto tcp to port ftp flags S/SA modulate state divert-to 127.0.0.1 port 8021\n'
+  printf '\n'
+
+  # filter start
+  printf 'block return\n'
+  printf '\n'
+
+  # antispoof
+  printf 'antispoof quick for { dmz virthosts netmgmt standard restricted vmm }\n'
+  printf '\n'
+
+  # filter continue
+  ## pings
+  for net in egress dmz virthosts netmgmt standard restricted ; do
+    printf 'pass out on %s inet proto icmp from (%s) icmp-type echoreq\n' "${net}" "${net}"
+    printf 'pass in on %s inet proto icmp to (%s) icmp-type echoreq\n' "${net}" "${net}"
+  done
+
+  # vmm
+  printf 'block out quick on vmm from !(vmm)\n'
+  printf 'pass on vmm from (vmm) to (vmm:network)\n'
+  printf 'block in on vmm\n'
+
+  # nms can talk to cable modem
+  printf 'pass from %s to %s\n' "${NMS_NETWORK}" "${CABLE_MODEM_IP}"
+
+  # dns
+  printf 'pass proto { tcp, udp } from any to %s port 53\n' "${DNS_NETWORK}"
+  printf 'pass proto { tcp, udp } from %s to any port 53\n' "${DNS_NETWORK}"
+
+  # dhcp
+  printf 'pass proto { tcp, udp } from any port 67:68 to %s\n' "${NMS_NETWORK}"
+
+  # ntp
+
+  # transit
+  printf 'pass in on %s to (%s)\n' "${transit}" "${transit}"
+  printf 'pass out on %s from (%s)\n' "${transit}" "${transit}"
+} > /etc/pf.conf
+
+pfctl -n -f /etc/pf.conf
+
+echo 'net.inet.ip.forwarding=1' >> /etc/sysctl.conf

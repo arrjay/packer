@@ -1,7 +1,10 @@
 {
   "variables": {
+    "cm_ip":			"{{env `CABLE_MODEM_IP`}}",
     "system":			"ifw",
     "nms1_internal_ip":		"{{env `NMS1_INTERNAL_IP`}}",
+    "nms_netblock":		"{{env `NMS_NETWORK`}}",
+    "dns_netblock":		"{{env `DNS_NETWORK`}}",
     "internal_efw_ip":		"{{env `EFW_INTERNAL_IP`}}",
     "ifw1_netmgmt_ip":		"{{env `IFW1_NETMGMT_IP`}}",
     "ifw1_user_ip":		"{{env `IFW1_USER_IP`}}",
@@ -128,6 +131,9 @@
       "environment_vars":
       [
         "AS_NUMBER={{user `as_number`}}",
+        "CABLE_MODEM_IP={{user `cm_ip`}}",
+        "NMS_NETWORK={{user `nms_netblock`}}",
+        "DNS_NETWORK={{user `dns_netblock`}}",
         "BGP_ROUTER_ID={{user `bgp_router_id`}}",
         "VMM_RANGE={{user `vmm_range`}}",
         "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
@@ -145,6 +151,7 @@
         "shared/openbsd/disable-ipv6.sh",
         "shared/openbsd/vmm-if.sh",
         "ifw-files/bgpd.sh",
+        "ifw-files/pf-rules.sh",
         "ifw-files/interfaces.sh"
       ]
     },
