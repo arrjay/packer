@@ -100,7 +100,8 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/ovfenv.sh"
+        "shared/openbsd/ovfenv.sh",
+        "shared/openbsd/vmm-if.sh"
       ]
     },
     {
