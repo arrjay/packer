@@ -56,10 +56,14 @@ visitors="${visitors} ${CABLE_MODEM_IP}/32"
   # filter continue
   printf 'pass in on egress inet proto icmp to (egress) icmp-type echoreq\n'
   printf 'block in quick on transit from !<admin> to %s\n' "${CABLE_MODEM_IP}" 
+  printf 'block out quick on vmm from !(vmm)\n'
   printf 'pass on vmm from (vmm) to (vmm:network)\n'
+  printf 'block in on vmm\n'
   printf 'pass on transit proto tcp flags S/SA modulate state\n'
   printf 'pass on transit proto { icmp, udp } keep state\n'
   printf 'pass out on egress to !<martians>\n'
 } > /etc/pf.conf
 
 pfctl -n -f /etc/pf.conf
+
+echo 'net.inet.ip.forwarding=1' >> /etc/sysctl.conf
