@@ -34,10 +34,11 @@ esac
   printf '\n'
 
   # filter start
-  printf 'block return\n'
+  printf 'block return log\n'
   printf '\n'
 
   # antispoof
+  printf 'pass out quick on dmz proto udp from port 67 to %s port 67\n' "${NMS_NETWORK}"
   printf 'antispoof quick for { dmz virthosts netmgmt standard restricted vmm }\n'
   printf '\n'
 
@@ -61,7 +62,9 @@ esac
   printf 'pass proto { tcp, udp } from %s to any port 53\n' "${DNS_NETWORK}"
 
   # dhcp
-  printf 'pass proto { tcp, udp } from any port 67:68 to %s\n' "${NMS_NETWORK}"
+  for net in virthosts netmgmt standard restricted ; do
+    printf 'pass in on %s proto udp from port 68 to port 67\n' "${net}"
+  done
 
   # ntp
 

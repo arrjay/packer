@@ -98,3 +98,5 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
 dhcpd -t
 
 chkconfig dhcpd on
+
+firewall-cmd --permanent --zone public --add-service dhcp
