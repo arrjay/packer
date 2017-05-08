@@ -76,6 +76,9 @@ esac
   # ntp
   printf 'pass proto udp from (netmgmt:network) to %s port 123\n' "${NMS_NETWORK}"
 
+  # standard users, doing standard user things ( ssh, http, https, ircs )
+  printf 'pass in on standard proto { tcp } to !<martians> port { 22, 80, 443, 6697 }\n'
+
   # transit
   printf 'pass in on %s to (%s)\n' "${transit}" "${transit}"
   printf 'pass out on %s from (%s)\n' "${transit}" "${transit}"
