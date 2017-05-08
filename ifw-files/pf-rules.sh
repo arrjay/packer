@@ -60,6 +60,9 @@ esac
   printf 'pass proto tcp from %s to (netmgmt:network) port { 22, 23, 80, 443 }\n' "${NMS_NETWORK}"
   printf 'pass proto tcp from (netmgmt:network) to %s port 22\n' "${NMS_NETWORK}"
 
+  # restricted can talk to nms:22, virthosts:22
+  printf 'pass proto tcp from (restricted:network) to { (dmz:network), (virthosts:network), (netmgmt:network) } port 22\n'
+
   # nms can talk to cable modem
   printf 'pass from %s to %s\n' "${NMS_NETWORK}" "${CABLE_MODEM_IP}"
 
