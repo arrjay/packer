@@ -20,7 +20,7 @@ esac
 # this sets environment variables from the password store
 for x in ${PASSWORD_STORE_DIR}/*.gpg ; do
   name=$(basename "${x}" .gpg)
-  declare -x ${name}=$(pass ls ${name})
+  declare -x ${name}="$(pass ls ${name})"
 done
 
 # this starts setting packer variables
