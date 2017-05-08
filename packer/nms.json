@@ -114,6 +114,7 @@
       [
         "{{user `system`}}-files/interfaces.sh",
         "{{user `system`}}-files/named.sh",
+        "{{user `system`}}-files/ntp.sh",
         "{{user `system`}}-files/dhcpd.sh"
       ]
     }
