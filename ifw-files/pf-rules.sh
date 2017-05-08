@@ -56,6 +56,10 @@ esac
   printf 'pass on vmm from (vmm) to (vmm:network)\n'
   printf 'block in on vmm\n'
 
+  # netmgmt can talk to nms:22 ; nms can talk to netmgmt:{ 22, 80, 443 }
+  printf 'pass proto tcp from %s to (netmgmt:network) port { 22, 80, 443 }\n' "${NMS_NETWORK}"
+  printf 'pass proto tcp from (netmgmt:network) to %s port 22\n' "${NMS_NETWORK}"
+
   # nms can talk to cable modem
   printf 'pass from %s to %s\n' "${NMS_NETWORK}" "${CABLE_MODEM_IP}"
 
