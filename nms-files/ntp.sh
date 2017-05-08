@@ -9,4 +9,7 @@ sed -i -e 's/^server.*//g' /etc/chrony.conf # first, remove static servers in fa
 {
   printf 'bindaddress 0.0.0.0\n'
   printf 'allow\n'
-} >> /etc/chronyd.conf
+} >> /etc/chrony.conf
+
+# and firewalld.
+firewall-cmd --permanant --zone public --add-service ntp

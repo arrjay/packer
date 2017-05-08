@@ -74,6 +74,7 @@ esac
   done
 
   # ntp
+  printf 'pass proto udp from (netmgmt:network) to %s port 123\n' "${NMS_NETWORK}"
 
   # transit
   printf 'pass in on %s to (%s)\n' "${transit}" "${transit}"
