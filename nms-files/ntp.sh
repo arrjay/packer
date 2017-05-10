@@ -12,4 +12,4 @@ sed -i -e 's/^server.*//g' /etc/chrony.conf # first, remove static servers in fa
 } >> /etc/chrony.conf
 
 # and firewalld.
-firewall-cmd --permanant --zone public --add-service ntp
+firewall-cmd --permanent --zone public --add-service ntp
