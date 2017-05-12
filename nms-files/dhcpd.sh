@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 ip2dec() {
   # Convert an IPv4 IP number to its decimal equivalent.

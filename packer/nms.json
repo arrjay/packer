@@ -2,6 +2,7 @@
   "variables": {
     "system":			"nms",
     "disk_size_mb":		"9216",
+    "soa_contact":		"{{ env `DNS_SOA_CONTACT` }}",
     "nsupdate_ktype":		"{{ env `NMS1_DNS_KEY_TYPE` }}",
     "nsupdate_kdata":		"{{ env `NMS1_DNS_KEY_DATA` }}",
     "dnsfw1_ip":		"{{ env `DNC1_IP` }}",
@@ -104,6 +105,7 @@
         "STANDARD_DHCP_GAP={{user `dhcp_gap`}}",
         "VIRTHOST_DHCP_GAP={{user `virthost_dhcp_gap`}}",
         "DNSFW1_IP={{user `dnsfw1_ip`}}",
+        "SOA_CONTACT={{user `soa_contact`}}",
         "NMS1_DNS_KEY_TYPE={{user `nsupdate_ktype`}}",
         "NMS1_DNS_KEY_DATA={{user `nsupdate_kdata`}}",
         "IFW1_NETMGMT_IP={{user `ifw1_netmgmt_ip`}}",
