@@ -6,6 +6,13 @@ set -e
 [ ! -z "${NMS1_DNS_KEY_DATA}" ]
 [ ! -z "${SOA_CONTACT}" ]
 
+arpait () {
+  local IFS
+  IFS=.
+  set -- $1
+  echo $3.$2.$1
+}
+
 yum -y install bind bind-utils
 
 {
@@ -47,12 +54,30 @@ yum -y install bind bind-utils
   for stub in dyn netmgmt virthosts dmz ; do
     printf 'zone "%s.produxi.net" IN {\n' "${stub}"
     printf '  type master;\n'
-    printf '  file "data/%s.produxi.net"\n;' "${stub}"
+    printf '  file "data/%s.produxi.net";\n' "${stub}"
     printf '  allow-update {key "nms1.";};\n'
     printf '};\n'
   done
 
+  printf 'zone "%s.in-addr.arpa" IN {\n' $(arpait $(dirname "${IFW1_DMZ_IP}"))
+  printf '  type master;\n'
+  printf '  file "data/%s.in-addr.arpa";\n' $(arpait $(dirname "${IFW1_DMZ_IP}"))
+  printf '  allow-update {none;};\n'
+  printf '};\n'
+
+  printf 'zone "%s.in-addr.arpa" IN {\n' $(arpait $(dirname "${IFW1_NETMGMT_IP}"))
+  printf '  type master;\n'
+  printf '  file "data/%s.in-addr.arpa";\n' $(arpait $(dirname "${IFW1_NETMGMT_IP}"))
+  printf '  allow-update {none;};\n'
+  printf '};\n'
+
+  printf 'zone "%s.in-addr.arpa" IN {\n' $(arpait $(dirname "${IFW1_RESTRICTEDUSER_IP}"))
+  printf '  type master;\n'
+  printf '  file "data/%s.in-addr.arpa";\n' $(arpait $(dirname "${IFW1_RESTRICTEDUSER_IP}"))
+  printf '  allow-update {none;};\n'
+  printf '};\n'
   printf 'include "/etc/named.update.key";\n'
+
 } > /etc/named.conf
 
 for stub in dyn netmgmt virthosts dmz ; do
@@ -66,7 +91,36 @@ done
   printf 'nms1\tA\t%s\n' $(dirname "${IPADDRESS}")
 } >> /var/named/data/dmz.produxi.net
 
-cat /etc/named.conf
+dmz_start=$(ipcalc -n ${IFW1_DMZ_IP}|awk -F. '{print $4}')
+dmz_end=$(ipcalc -b ${IFW1_DMZ_IP}|awk -F. '{print $4}')
+dmz_mask=$(basename ${IFW1_DMZ_IP})
+virt_start=$(ipcalc -n ${IFW1_VIRTHOST_IP}|awk -F. '{print $4}')
+virt_end=$(ipcalc -b ${IFW1_VIRTHOST_IP}|awk -F. '{print $4}')
+virt_mask=$(basename ${IFW1_VIRTHOST_IP})
+{
+  printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
+  printf '@\tNS\tnms1.dmz.produxi.net.\n'
+  printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${dmz_start}" "${dmz_end}" "${dmz_start}" "${dmz_mask}"
+  printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${virt_start}" "${virt_end}" "${virt_start}" "${virt_mask}"
+} > /var/named/data/$(arpait $(dirname "${IFW1_DMZ_IP}")).in-addr.arpa
+
+netmgmt1_start=$(ipcalc -n ${IFW1_NETMGMT_IP}|awk -F. '{print $4}')
+netmgmt1_end=$(ipcalc -b ${IFW1_NETMGMT_IP}|awk -F. '{print $4}')
+netmgmt1_mask=$(basename ${IFW1_NETMGMT_IP})
+{
+  printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
+  printf '@\tNS\tnms1.dmz.produxi.net.\n'
+  printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${netmgmt1_start}" "${netmgmt1_end}" "${netmgmt1_start}" "${netmgmt1_mask}"
+} > /var/named/data/$(arpait $(dirname "${IFW1_NETMGMT_IP}")).in-addr.arpa
+
+ruser_start=$(ipcalc -n ${IFW1_RESTRICTEDUSER_IP}|awk -F. '{print $4}')
+ruser_end=$(ipcalc -b ${IFW1_RESTRICTEDUSER_IP}|awk -F. '{print $4}')
+ruser_mask=$(basename ${IFW1_RESTRICTEDUSER_IP})
+{
+  printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
+  printf '@\tNS\tnms1.dmz.produxi.net.\n'
+  printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${ruser_start}" "${ruser_end}" "${ruser_start}" "${ruser_mask}"
+} > /var/named/data/$(arpait $(dirname "${IFW1_RESTRICTEDUSER_IP}")).in-addr.arpa
 
 named-checkconf -z /etc/named.conf
 
