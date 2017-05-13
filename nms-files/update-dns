@@ -1,0 +1,101 @@
+#!/bin/bash
+
+# call with (add|delete) IP [NAME]
+action=$1
+ip=$2
+name=$(echo $3 | awk -F '.' '{ print $1 }')
+DOMAIN=$4
+
+# load config (NS, KEY)
+. ./update-dns.conf
+
+if [ -z "${NS}" ] ; then exit 2 ; fi
+
+# last-octet function
+get_loctet () {
+    local IFS
+    IFS=.
+    set -- $1
+    echo $4
+}
+
+# reverse ip funtion
+reverseip () {
+    local IFS
+    IFS=.
+    set -- $1
+    echo $4.$3.$2.$1
+}
+
+# get a PTR record handy
+ptr="$(reverseip $ip).in-addr.arpa."
+
+# and the last octet
+loctet="$(get_loctet $ip)"
+
+# attempt to look up name if expiring a deletion
+if [ -z "${name}" ]; then
+	name=$(dig -t PTR ${ptr} @${NS} | grep 'IN PTR' | awk '{ print $5 }' | awk -F '.' '{ print $1 }')
+fi
+
+# err, if we still don't have a name, make something up
+if [ -z "${name}" ]; then
+	name="dynclient-${loctet}"
+fi
+
+# see if we are reissuing an IP
+oldname=$(dig -t PTR ${ptr} @${NS} | grep 'IN PTR' | awk '{ print $5 }' | awk -F '.' '{ print $1 }')
+
+# check for a delegation via CNAME in in-addr.arpa
+delegation=$(dig -t CNAME ${ptr} @${NS} | grep -E 'IN.*CNAME' | grep -v '^;' | awk '{ print $5 }'|cut -d. -f2-)
+if [ -z "${delegation}" ]; then
+	delegation=$(echo ${ptr}|cut -d. -f2-)
+fi
+
+DELEGATION="${delegation}"
+
+case "$action" in
+	add)
+		UPDATE=$(mktemp)
+		printf "server %s\n" ${NS} > ${UPDATE}
+		printf "zone %s\n" ${DOMAIN} >> ${UPDATE}
+		if [ -n "${oldname}" ]; then
+			printf "update delete %s 3600 A\n" ${oldname}.${DOMAIN} >> ${UPDATE}
+		fi
+		printf "update delete %s 3600 A\n" ${name}.${DOMAIN} >> ${UPDATE}
+		printf "update add %s 3600 A %s\n" ${name}.${DOMAIN} ${ip} >> ${UPDATE}
+		printf "send\n" >> ${UPDATE}
+		nsupdate -y "${KEY}" "${UPDATE}"
+		rm "$UPDATE"
+
+		UPDATE=$(mktemp)
+		printf "server %s\n" ${NS} > ${UPDATE}
+		printf "zone %s\n" ${DELEGATION} >> ${UPDATE}
+		printf "update delete %s 3600 PTR\n" ${loctet}.${DELEGATION} >> ${UPDATE}
+		printf "update add %s 3600 PTR %s\n" ${loctet}.${DELEGATION} ${name}.${DOMAIN} >> ${UPDATE}
+		printf "send\n" >> ${UPDATE}
+		nsupdate -y "${KEY}" "${UPDATE}"
+		rm "${UPDATE}"
+		;;
+	delete)
+		if [ -n "${name}" ]; then
+			UPDATE=$(mktemp)
+			printf "server %s\n" ${NS} > ${UPDATE}
+			printf "zone %s\n" ${DOMAIN} >> ${UPDATE}
+			printf "update delete %s 3600 A\n" ${name}.${DOMAIN} >> ${UPDATE}
+			printf "send\n" >> ${UPDATE}
+			nsupdate -y "${KEY}" "${UPDATE}"
+			rm "$UPDATE"
+		fi
+		UPDATE=$(mktemp)
+		printf "server %s\n" ${NS} > ${UPDATE}
+		printf "zone %s\n" ${DELEGATION} >> ${UPDATE}
+		printf "update delete %s 3600 PTR\n" ${loctet}.${DELEGATION} >> ${UPDATE}
+		printf "send\n" >> ${UPDATE}
+		nsupdate -y "${KEY}" "${UPDATE}"
+		rm "${UPDATE}"
+		;;
+	*)
+		# noop!
+		;;
+esac
