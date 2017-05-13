@@ -71,26 +71,32 @@ restrict_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_RESTRICTEDUSER_IP}" | cut 
 restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
 
 {
+  printf 'option px-network code 170 = text;\n\n'
   printf 'subnet %s netmask %s {\n}\n' "${mynet}" "${mymask}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
+  printf ' option px-network "%s";\n' "netmgmt"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' option ntp-servers %s;\n' "${myaddr}"
   printf ' range %s %s;\n}\n' "${netmgmt_min}" "${netmgmt_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${user_net}" "${user_mask}" "${user_mask}" "${user_rtr}"
+  printf ' option px-network "%s";\n' "dyn"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
+  printf ' option px-network "%s";\n' "dmz"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}" "${vhost_rtr}"
+  printf ' option px-network "%s";\n' "virthost"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${vhost_min}" "${vhost_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${restrict_net}" "${restrict_mask}" "${restrict_mask}" "${restrict_rtr}"
+  printf ' option px-network "%s";\n' "dyn"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${restrict_min}" "${restrict_max}"
 
