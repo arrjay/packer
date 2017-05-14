@@ -29,6 +29,7 @@ dec2ip() {
 [ ! -z "${IFW1_RESTRICTEDUSER_IP}" ]
 [ ! -z "${STANDARD_DHCP_GAP}" ]
 [ ! -z "${VIRTHOST_DHCP_GAP}" ]
+[ ! -z "${NETMGMT_DHCP_TABLE}" ]
 
 yum install -y dhcp
 
@@ -89,24 +90,37 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
   printf ' set clientip = binary-to-ascii(10,8, ".", leased-address);\n'
   printf ' set r_domain = concat(option px-network, ".produxi.net");\n'
   printf ' execute("/etc/dhcp/scripts/update-dns","delete",clientip,r_domain);\n'
-  printf '}\n'
-  printf 'subnet %s netmask %s {\n}\n' "${mynet}" "${mymask}"
+  printf '}\n\n'
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
-  printf ' option px-network "%s";\n' "netmgmt"
-  printf ' option domain-name-servers %s;\n' "${std_dns1}"
-  printf ' option ntp-servers %s;\n' "${myaddr}"
-  printf ' range %s %s;\n}\n' "${netmgmt_min}" "${netmgmt_max}"
+  printf 'class "netmgmt" {\n'
+  printf ' match hardware;\n'
+  printf '}\n\n'
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${user_net}" "${user_mask}" "${user_mask}" "${user_rtr}"
-  printf ' option px-network "%s";\n' "dyn"
-  printf ' option domain-name-servers %s;\n' "${std_dns1}"
-  printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
+  for l in ${NETMGMT_DHCP_TABLE} ; do
+    mac=$(echo "$l"|cut -d, -f1|sed 's/[.:]//g')
+    hname=$(echo "$l"|cut -d, -f2|sed 's/[.:].*//')
+    dmac="${mac:0:2}:${mac:2:2}:${mac:4:2}:${mac:6:2}:${mac:8:2}:${mac:10:2}"
+    if [ "${hname}" != "${mac}" ] ; then printf 'host %s { option dhcp-client-identifier 1:%s; hardware ethernet %s; }\n' "${hname}" "${dmac}" "${dmac}" ; fi
+    printf 'subclass "netmgmt" 1:%s; subclass "netmgmt" %s;\n' "${dmac}" "${dmac}"
+  done
+  printf '\n'
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
   printf ' option px-network "%s";\n' "dmz"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
+
+  printf 'subnet %s netmask %s{ pool {\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
+  printf ' allow members of "%s";\n' "netmgmt"
+  printf ' option px-network "%s";\n' "netmgmt"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
+  printf ' option ntp-servers %s;\n' "${myaddr}"
+  printf ' range %s %s;\n} }\n' "${netmgmt_min}" "${netmgmt_max}"
+
+  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${user_net}" "${user_mask}" "${user_mask}" "${user_rtr}"
+  printf ' option px-network "%s";\n' "dyn"
+  printf ' option domain-name-servers %s;\n' "${std_dns1}"
+  printf ' range %s %s;\n}\n' "${user_min}" "${user_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}" "${vhost_rtr}"
   printf ' option px-network "%s";\n' "virthosts"
