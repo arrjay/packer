@@ -3,11 +3,11 @@
 # call with (add|delete) IP [NAME]
 action=$1
 ip=$2
-name=$(echo $3 | awk -F '.' '{ print $1 }')
-DOMAIN=$4
+DOMAIN=$3
+name=$(echo $4 | awk -F '.' '{ print $1 }')
 
 # load config (NS, KEY)
-. ./update-dns.conf
+. /usr/local/etc/update-dns.conf
 
 if [ -z "${NS}" ] ; then exit 2 ; fi
 

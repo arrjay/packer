@@ -71,7 +71,25 @@ restrict_max=$(dec2ip $(($(ip2dec $(ipcalc -b "${IFW1_RESTRICTEDUSER_IP}" | cut 
 restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
 
 {
+  printf 'ddns-update-style none;\n'
+  printf 'use-host-decl-names on;\n'
   printf 'option px-network code 170 = text;\n\n'
+  printf 'on commit {\n'
+  printf ' set clientip = binary-to-ascii(10,8, ".", leased-address);\n'
+  printf ' set clientname = pick-first-value(config-option host-name, host-decl-name, option host-name, "");\n'
+  printf ' set r_domain = concat(config-option px-network, ".produxi.net");\n'
+  printf ' execute("/usr/local/sbin/update-dns","add",clientip,r_domain,clientname);\n'
+  printf '}\n'
+  printf 'on release {\n'
+  printf ' set clientip = binary-to-ascii(10,8, ".", leased-address);\n'
+  printf ' set r_domain = concat(option px-network, ".produxi.net");\n'
+  printf ' execute("/usr/local/sbin/update-dns","delete",clientip,r_domain);\n'
+  printf '}\n'
+  printf 'on expiry {\n'
+  printf ' set clientip = binary-to-ascii(10,8, ".", leased-address);\n'
+  printf ' set r_domain = concat(option px-network, ".produxi.net");\n'
+  printf ' execute("/usr/local/sbin/update-dns","delete",clientip,r_domain);\n'
+  printf '}\n'
   printf 'subnet %s netmask %s {\n}\n' "${mynet}" "${mymask}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
@@ -91,7 +109,7 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
   printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
 
   printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${vhost_net}" "${vhost_mask}" "${vhost_mask}" "${vhost_rtr}"
-  printf ' option px-network "%s";\n' "virthost"
+  printf ' option px-network "%s";\n' "virthosts"
   printf ' option domain-name-servers %s;\n' "${std_dns1}"
   printf ' range %s %s;\n}\n' "${vhost_min}" "${vhost_max}"
 
