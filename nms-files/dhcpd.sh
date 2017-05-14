@@ -29,6 +29,7 @@ dec2ip() {
 [ ! -z "${IFW1_RESTRICTEDUSER_IP}" ]
 [ ! -z "${STANDARD_DHCP_GAP}" ]
 [ ! -z "${VIRTHOST_DHCP_GAP}" ]
+[ ! -z "${NETMGMT_DHCP_TABLE}" ]
 
 yum install -y dhcp
 
@@ -96,18 +97,16 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
   printf '}\n\n'
 
   for l in ${NETMGMT_DHCP_TABLE} ; do
-    mac=$(echo "$1"|cut -d, -f1|sed 's/[.:]//g')
-    hname=$(echo "$l"|cut -d, -f2|sed 's/[.].*//')
-    mac="${mac:0:2}:${mac:2:2}:${mac:4:2}:${mac:6:2}:${mac:8:2}:${mac:10:2}"
-    if [ ! -z "${hname}" ] ; then printf 'host %s { option dhcp-client-identifier 1:%s; hardware ethernet %s; }\n' "${hname}" "${mac}" "${mac}" ; fi
-    printf 'subclass "netmgmt" 1:%s; subclass "netmgmt" %s;\n' "${mac}" "${mac}"
+    mac=$(echo "$l"|cut -d, -f1|sed 's/[.:]//g')
+    hname=$(echo "$l"|cut -d, -f2|sed 's/[.:].*//')
+    dmac="${mac:0:2}:${mac:2:2}:${mac:4:2}:${mac:6:2}:${mac:8:2}:${mac:10:2}"
+    if [ "${hname}" != "${mac}" ] ; then printf 'host %s { option dhcp-client-identifier 1:%s; hardware ethernet %s; }\n' "${hname}" "${dmac}" "${dmac}" ; fi
+    printf 'subclass "netmgmt" 1:%s; subclass "netmgmt" %s;\n' "${dmac}" "${dmac}"
   done
-  printf '\n\n'
+  printf '\n'
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
-  printf ' option px-network "%s";\n' "dmz"
-  printf ' option domain-name-servers %s;\n' "${std_dns1}"
-  printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
+  printf 'subnet %s netmask %s{\n' "${dmz_net}" "${dmz_mask}"
+  printf ' }\n'
 
   printf 'subnet %s netmask %s{ pool {\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
   printf ' allow members of "%s";\n' "netmgmt"
