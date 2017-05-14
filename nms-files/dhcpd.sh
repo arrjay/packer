@@ -105,10 +105,8 @@ restrict_rtr=$(dirname "${IFW1_RESTRICTEDUSER_IP}")
   done
   printf '\n'
 
-  printf 'subnet %s netmask %s{\n option subnet-mask %s;\n option routers %s;\n' "${dmz_net}" "${dmz_mask}" "${dmz_mask}" "${dmz_rtr}"
-  printf ' option px-network "%s";\n' "dmz"
-  printf ' option domain-name-servers %s;\n' "${std_dns1}"
-  printf ' range %s %s;\n}\n' "${dmz_min}" "${dmz_max}"
+  printf 'subnet %s netmask %s{\n' "${dmz_net}" "${dmz_mask}"
+  printf ' }\n'
 
   printf 'subnet %s netmask %s{ pool {\n option subnet-mask %s;\n option routers %s;\n' "${netmgmt_net}" "${netmgmt_mask}" "${netmgmt_mask}" "${netmgmt_rtr}"
   printf ' allow members of "%s";\n' "netmgmt"
