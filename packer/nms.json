@@ -126,8 +126,8 @@
         "{{user `system`}}-files/interfaces.sh",
         "{{user `system`}}-files/named.sh",
         "{{user `system`}}-files/ntp.sh",
-        "{{user `system`}}-files/update-dns.sh",
-        "{{user `system`}}-files/dhcpd.sh"
+        "{{user `system`}}-files/dhcpd.sh",
+        "{{user `system`}}-files/update-dns.sh"
       ]
     }
   ]
