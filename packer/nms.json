@@ -11,6 +11,7 @@
     "ifw1_dmz_ip":		"{{ env `IFW1_DMZ_IP` }}",
     "ifw1_virthost_ip":		"{{ env `IFW1_VIRTHOST_IP` }}",
     "ifw1_restricteduser_ip":	"{{ env `IFW1_RESTRICTEDUSER_IP` }}",
+    "efw_internal_ip":		"{{ env `EFW_INTERNAL_IP` }}",
     "netmgmt_dhcp_table":	"{{ env `NETMGMT_DHCP_TABLE` }}",
     "dhcp_gap":			"{{ env `STANDARD_DHCP_GAP` }}",
     "virthost_dhcp_gap":	"{{ env `VIRTHOST_DHCP_GAP` }}",
@@ -120,6 +121,7 @@
         "IFW1_VIRTHOST_IP={{user `ifw1_virthost_ip`}}",
         "IFW1_RESTRICTEDUSER_IP={{user `ifw1_restricteduser_ip`}}",
         "NETMGMT_DHCP_TABLE={{user `netmgmt_dhcp_table`}}",
+        "EFW_INTERNAL_IP={{user `efw_internal_ip`}}",
         "IPADDRESS={{user `ipaddress`}}"
       ],
       "type": "shell",

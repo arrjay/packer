@@ -27,6 +27,9 @@ netmgmt1_mask=$(basename ${IFW1_NETMGMT_IP})
 ruser_start=$(ipcalc -n ${IFW1_RESTRICTEDUSER_IP}|awk -F. '{print $4}')
 ruser_end=$(ipcalc -b ${IFW1_RESTRICTEDUSER_IP}|awk -F. '{print $4}')
 ruser_mask=$(basename ${IFW1_RESTRICTEDUSER_IP})
+transit_start=$(ipcalc -n ${EFW_INTERNAL_IP}|awk -F. '{print $4}')
+transit_end=$(ipcalc -b ${EFW_INTERNAL_IP}|awk -F. '{print $4}')
+transit_mask=$(basename ${EFW_INTERNAL_IP})
 
 {
   printf 'key nms1. {\n'
@@ -64,7 +67,7 @@ ruser_mask=$(basename ${IFW1_RESTRICTEDUSER_IP})
   printf '  };\n'
   printf '};\n'
 
-  for stub in dyn netmgmt virthosts dmz ; do
+  for stub in dyn netmgmt virthosts dmz transit ; do
     printf 'zone "%s.produxi.net" IN {\n' "${stub}"
     printf '  type master;\n'
     printf '  file "data/%s.produxi.net";\n' "${stub}"
@@ -90,9 +93,17 @@ ruser_mask=$(basename ${IFW1_RESTRICTEDUSER_IP})
   printf '  allow-update {none;};\n'
   printf '};\n'
 
+  printf 'zone "%s.in-addr.arpa" IN {\n' $(arpait $(dirname "${EFW_INTERNAL_IP}"))
+  printf '  type master;\n'
+  printf '  file "data/%s.in-addr.arpa";\n' $(arpait $(dirname "${EFW_INTERNAL_IP}"))
+  printf '  allow-update {none;};\n'
+  printf '};\n'
+
   for arpa in $(arpait $(dirname "${IFW1_USER_IP}")) "${ruser_start}/${ruser_mask}.$(arpait $(dirname ${IFW1_RESTRICTEDUSER_IP}))" \
               "${netmgmt1_start}/${netmgmt1_mask}.$(arpait $(dirname ${IFW1_NETMGMT_IP}))" \
-              "${dmz_start}/${dmz_mask}.$(arpait $(dirname ${IFW1_DMZ_IP}))" "${virt_start}/${virt_mask}.$(arpait $(dirname ${IFW1_VIRTHOST_IP}))" ; do
+              "${dmz_start}/${dmz_mask}.$(arpait $(dirname ${IFW1_DMZ_IP}))" "${virt_start}/${virt_mask}.$(arpait $(dirname ${IFW1_VIRTHOST_IP}))" \
+              "${transit_start}/${transit_mask}.$(arpait $(dirname ${EFW_INTERNAL_IP}))"
+           do
     printf 'zone "%s.in-addr.arpa" IN {\n' ${arpa}
     printf '  type master;\n'
     printf '  file "data/%s.in-addr.arpa";\n' $(echo ${arpa} | sed 's@/@_@g')
@@ -105,7 +116,7 @@ ruser_mask=$(basename ${IFW1_RESTRICTEDUSER_IP})
 
 } > /etc/named.conf
 
-for stub in dyn netmgmt virthosts dmz ; do
+for stub in dyn netmgmt virthosts dmz transit ; do
   {
     printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
     printf '@\tNS\tnms1.dmz.produxi.net.\n'
@@ -114,7 +125,9 @@ done
 
 for arpa in $(arpait $(dirname "${IFW1_USER_IP}")) "${ruser_start}_${ruser_mask}.$(arpait $(dirname ${IFW1_RESTRICTEDUSER_IP}))" \
             "${netmgmt1_start}_${netmgmt1_mask}.$(arpait $(dirname ${IFW1_NETMGMT_IP}))" \
-            "${dmz_start}_${dmz_mask}.$(arpait $(dirname ${IFW1_DMZ_IP}))" "${virt_start}_${virt_mask}.$(arpait $(dirname ${IFW1_VIRTHOST_IP}))" ; do
+            "${dmz_start}_${dmz_mask}.$(arpait $(dirname ${IFW1_DMZ_IP}))" "${virt_start}_${virt_mask}.$(arpait $(dirname ${IFW1_VIRTHOST_IP}))" \
+            "${transit_start}_${transit_mask}.$(arpait $(dirname ${EFW_INTERNAL_IP}))"
+         do
   {
     printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
     printf '@\tNS\tnms1.dmz.produxi.net.\n'
@@ -124,6 +137,12 @@ done
 {
   printf 'nms1\tA\t%s\n' $(dirname "${IPADDRESS}")
 } >> /var/named/data/dmz.produxi.net
+
+{
+  printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
+  printf '@\tNS\tnms1.dmz.produxi.net.\n'
+  printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${transit_start}" "${transit_end}" "${transit_start}" "${transit_mask}"
+} > /var/named/data/$(arpait $(dirname "${EFW_INTERNAL_IP}")).in-addr.arpa
 
 {
   printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
