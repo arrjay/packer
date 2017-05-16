@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 # okay I was mean and took advantage of set -e
 [ ! -z "${CABLE_MODEM_IP}" ]
@@ -12,6 +12,10 @@ case "${PACKER_BUILDER_TYPE}" in
   vmware*)      transit=vmx0 ;;
   *)            false ;;
 esac
+
+# configure tftp-proxy service first
+rcctl enable tftpproxy
+rcctl set tftpproxy flags -v
 
 {
   # tables
@@ -30,6 +34,7 @@ esac
 
   # diverts
   printf 'anchor "ftp-proxy/*"\n'
+  printf 'anchor "tftp-proxy/*"\n'
   printf 'pass in on { dmz virthosts netmgmt standard restricted } inet proto tcp to port ftp flags S/SA modulate state divert-to 127.0.0.1 port 8021\n'
   printf '\n'
 
@@ -59,6 +64,10 @@ esac
   # netmgmt can talk to nms:22 ; nms can talk to netmgmt:{ 22, 23, 80, 443 }
   printf 'pass proto tcp from %s to (netmgmt:network) port { 22, 23, 80, 443 }\n' "${NMS_NETWORK}"
   printf 'pass proto tcp from (netmgmt:network) to %s port 22\n' "${NMS_NETWORK}"
+
+  # netmgmt can tftp to nms via tftp-proxy (127.0.0.1:6969)
+  printf 'pass in quick on netmgmt proto udp from (netmgmt:network) to %s port 69 divert-to 127.0.0.1 port 6969\n' "${NMS_NETWORK}"
+  printf 'pass out quick on dmz proto udp from (netmgmt:network) to %s port 69 group _tftp_proxy divert-reply\n' "${NMS_NETWORK}"
 
   # restricted can talk to nms:22, virthosts:22
   printf 'pass proto tcp from (restricted:network) to { (dmz:network), (virthosts:network), (netmgmt:network) } port 22\n'

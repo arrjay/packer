@@ -43,7 +43,6 @@ done
 uname_s=$(uname -s)
 
 packer version
-set -x
 packer build \
   $PACKER_BUILD_FLAGS \
   -var-file packer/vars2.json "${1}"
