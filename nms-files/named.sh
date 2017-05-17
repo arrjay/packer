@@ -67,7 +67,7 @@ transit_mask=$(basename ${EFW_INTERNAL_IP})
   printf '  };\n'
   printf '};\n'
 
-  for stub in dyn netmgmt virthosts dmz transit ; do
+  for stub in dyn netmgmt virthosts dmz ; do
     printf 'zone "%s.produxi.net" IN {\n' "${stub}"
     printf '  type master;\n'
     printf '  file "data/%s.produxi.net";\n' "${stub}"
@@ -116,7 +116,7 @@ transit_mask=$(basename ${EFW_INTERNAL_IP})
 
 } > /etc/named.conf
 
-for stub in dyn netmgmt virthosts dmz transit ; do
+for stub in dyn netmgmt virthosts dmz ; do
   {
     printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
     printf '@\tNS\tnms1.dmz.produxi.net.\n'
