@@ -139,6 +139,10 @@ done
 } >> /var/named/data/dmz.produxi.net
 
 {
+  printf '%s PTR nms1.dmz.produxi.net.\n' "${IPADDRESS##*.}"
+} >> /var/named/data/${dmz_start}_${dmz_mask}.$(arpait $(dirname ${IFW1_DMZ_IP})).in-addr.arpa
+
+{
   printf '$TTL 1d\n@ SOA @ %s. 1 2d 1d 1w 12h\n' "${SOA_CONTACT}"
   printf '@\tNS\tnms1.dmz.produxi.net.\n'
   printf '$GENERATE %s-%s $ CNAME $.%s/%s\n' "${transit_start}" "${transit_end}" "${transit_start}" "${transit_mask}"
