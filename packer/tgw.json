@@ -1,7 +1,10 @@
 {
   "variables": {
     "router_id":	"{{env `TGW_ROUTER_ID`}}",
+    "wbridge_ip":	"{{env `TGW_WIRELESS_IP`}}",
+    "plbridge_ip":	"{{env `TGW_POWERLINE_IP`}}",
     "as_number":	"{{env `AS_NUMBER`}}",
+    "nms1_internal_ip":	"{{env `NMS1_INTERNAL_IP`}}",
     "system":		"tgw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
@@ -112,6 +115,9 @@
       "environment_vars":
       [
         "AS_NUMBER={{user `as_number`}}",
+        "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
+        "WBRIDGE_IP={{user `wbridge_ip`}}",
+        "PLBRIDGE_IP={{user `plbridge_ip`}}",
         "BGP_ROUTER_ID={{user `router_id`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
@@ -121,8 +127,7 @@
         "shared/openbsd/disable-ipv6.sh",
         "shared/openbsd/vmm-if.sh",
         "{{user `system`}}-files/interfaces.sh",
-        "{{user `system`}}-files/bgpd.sh",
-        "{{user `system`}}-files/dhcpd.sh"
+        "{{user `system`}}-files/bgpd.sh"
       ]
     },
     {
