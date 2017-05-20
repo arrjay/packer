@@ -2,7 +2,7 @@
 
 set -e
 
-pkg_add sipcalc
+pkg_add sipcalc isc-dhcp-server
 
 [ ! -z "${TRANSIT_IP}" ]
 [ ! -z "${TRANSIT_DHCP_GAP}" ]
@@ -37,8 +37,7 @@ ip_int=$(sipcalc ${subnet}|awk -F'- ' '$0 ~ "decimal" { print $2 }')
 next_ip_int=$((${ip_int} + ${TRANSIT_DHCP_GAP}))
 next_ip=$(itoa "${next_ip_int}")
 
-rcctl enable dhcpd
-rcctl set dhcpd flags $ifname
+rcctl enable isc_dhcpd
 
 {
   printf 'subnet %s netmask %s {\n' "${subnet}" "${tf_mask}"
@@ -47,6 +46,4 @@ rcctl set dhcpd flags $ifname
   printf '}\n'
 } > /etc/dhcpd.conf
 
-cat /etc/dhcpd.conf
-
-dhcpd -n
+/usr/local/sbin/dhcpd -t -cf /etc/dhcpd.conf
