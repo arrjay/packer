@@ -131,6 +131,7 @@
         "{{user `system`}}-files/pf-rules.sh",
         "{{user `system`}}-files/transit-if.sh",
         "{{user `system`}}-files/bgpd.sh",
+        "{{user `system`}}-files/consul.sh",
         "{{user `system`}}-files/dhcpd.sh"
       ]
     },
