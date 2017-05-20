@@ -1,10 +1,11 @@
 {
   "variables": {
-    "router_id":	"{{env `TGW_ROUTER_ID`}}",
     "wbridge_ip":	"{{env `TGW_WIRELESS_IP`}}",
     "plbridge_ip":	"{{env `TGW_POWERLINE_IP`}}",
     "as_number":	"{{env `AS_NUMBER`}}",
     "nms1_internal_ip":	"{{env `NMS1_INTERNAL_IP`}}",
+    "efw_ip":		"{{env `EFW_INTERNAL_IP`}}",
+    "vmm_range":	"{{env `VMM_RANGE`}}",
     "system":		"tgw",
     "disk_size_mb":	"9216",
     "qemu_disk_format":	"qcow2"
@@ -115,10 +116,11 @@
       "environment_vars":
       [
         "AS_NUMBER={{user `as_number`}}",
+        "VMM_RANGE={{user `vmm_range`}}",
+        "INTERNAL_EFW_IP={{user `efw_ip`}}",
         "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
         "WBRIDGE_IP={{user `wbridge_ip`}}",
-        "PLBRIDGE_IP={{user `plbridge_ip`}}",
-        "BGP_ROUTER_ID={{user `router_id`}}"
+        "PLBRIDGE_IP={{user `plbridge_ip`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
