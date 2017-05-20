@@ -2,6 +2,7 @@
   "variables": {
     "wbridge_ip":	"{{env `TGW_WIRELESS_IP`}}",
     "plbridge_ip":	"{{env `TGW_POWERLINE_IP`}}",
+    "tgw_supernet":	"{{env `TGW_SUPERNET`}}",
     "as_number":	"{{env `AS_NUMBER`}}",
     "nms1_internal_ip":	"{{env `NMS1_INTERNAL_IP`}}",
     "efw_ip":		"{{env `EFW_INTERNAL_IP`}}",
@@ -119,6 +120,7 @@
         "VMM_RANGE={{user `vmm_range`}}",
         "INTERNAL_EFW_IP={{user `efw_ip`}}",
         "NMS1_INTERNAL_IP={{user `nms1_internal_ip`}}",
+        "SUPERNET={{user `tgw_supernet`}}",
         "WBRIDGE_IP={{user `wbridge_ip`}}",
         "PLBRIDGE_IP={{user `plbridge_ip`}}"
       ],

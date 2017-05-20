@@ -4,6 +4,7 @@ set -ex
 
 [ ! -z "${AS_NUMBER}" ]
 [ ! -z "${INTERNAL_EFW_IP}" ]
+[ ! -z "${SUPERNET}" ]
 
 [ ! -z "${VMM_RANGE}" ]
 
@@ -12,6 +13,8 @@ receiver=$(echo ${INTERNAL_EFW_IP}|sed 's@/'${rcv_cidr}'@@')
 
 {
   printf 'AS %s\n' "${AS_NUMBER}"
+  printf '\n'
+  printf 'network %s\n' "${SUPERNET}"
   printf '\n'
   printf 'deny from any prefix { %s }\n\n' "${VMM_RANGE}"
   printf 'nexthop qualify via bgp\n\n'
