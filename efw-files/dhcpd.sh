@@ -40,7 +40,10 @@ next_ip=$(itoa "${next_ip_int}")
 rcctl enable isc_dhcpd
 
 {
+  printf 'ddns-update-style none;\n\n'
+  printf 'option hashi-consul-servers code 84 = array of ip-address;\n\n'
   printf 'subnet %s netmask %s {\n' "${subnet}" "${tf_mask}"
+  printf ' option hashi-consul-servers %s;\n' "${tf_addr}"
   printf ' option subnet-mask %s;\n' "${tf_mask}"
   printf ' range %s %s;\n' "${next_ip}" "${last_ip}"
   printf '}\n'
