@@ -47,7 +47,7 @@
       "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
       "vmx_data_post":
       {
-        "memsize":			"128",
+        "memsize":			"192",
         "ethernet1.present":		"TRUE",
         "ethernet1.virtualdev":		"vmxnet3",
         "ethernet2.present":		"TRUE",
@@ -110,6 +110,11 @@
       [
         "shared/openbsd/ovfenv.sh"
       ]
+    },
+    {
+      "type": "file",
+      "source": "{{user `system`}}-files/consul-check-efw-bgpd.sh",
+      "destination": "/tmp/efw-bgpd.sh"
     },
     {
       "environment_vars":
