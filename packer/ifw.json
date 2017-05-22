@@ -53,7 +53,7 @@
       "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
       "vmx_data_post":
       {
-        "memsize":			"128",
+        "memsize":			"192",
         "ethernet0.networkName":	"virtual1",
         "ethernet1.present":		"TRUE",
         "ethernet1.virtualdev":		"vmxnet3",
@@ -130,6 +130,16 @@
       ]
     },
     {
+      "type": "file",
+      "source": "shared/openbsd/consul-server.awk",
+      "destination": "/tmp/consul-server.awk"
+    },
+    {
+      "type": "file",
+      "source": "ifw-files/consul.rc",
+      "destination": "/tmp/consul.rc"
+    },
+    {
       "environment_vars":
       [
         "AS_NUMBER={{user `as_number`}}",
@@ -154,7 +164,8 @@
         "shared/openbsd/vmm-if.sh",
         "ifw-files/bgpd.sh",
         "ifw-files/pf-rules.sh",
-        "ifw-files/interfaces.sh"
+        "ifw-files/interfaces.sh",
+        "ifw-files/consul-sub.sh"
       ]
     },
     {

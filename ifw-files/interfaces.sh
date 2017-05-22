@@ -18,6 +18,10 @@ case "${PACKER_BUILDER_TYPE}" in
 esac
 
 {
+  printf 'request option-84;\n'
+} >> /etc/dhclient.conf
+
+{
   printf 'inet %s\n' "${DMZ_IP}"
   printf '-inet6\n'
   printf 'group dmz\n'
