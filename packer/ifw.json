@@ -131,6 +131,11 @@
     },
     {
       "type": "file",
+      "source": "consul-obsd-amd64-0.7.5.tgz",
+      "destination": "/tmp/consul-0.7.5.tgz"
+    },
+    {
+      "type": "file",
       "source": "shared/openbsd/consul-server.awk",
       "destination": "/tmp/consul-server.awk"
     },

@@ -8,7 +8,8 @@ case "${PACKER_BUILDER_TYPE}" in
   *)            false ;;
 esac
 
-pkg_add consul jq entr
+pkg_add -Dunsigned /tmp/consul-0.7.5.tgz
+pkg_add jq entr
 
 mkdir -p /usr/local/{etc,libexec}
 
