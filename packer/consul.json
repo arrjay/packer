@@ -1,0 +1,153 @@
+{
+  "variables": {
+    "system":		"consul-builder",
+    "disk_size_mb":	"36864",
+    "memory_mb":	"1024"
+  },
+  "builders":
+  [
+    {
+      "type":			"qemu",
+      "qemuargs":		[ [ "-m", "{{user `memory_mb`}}" ] ],
+      "headless":		"{{user `packer_qemu_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"system.img",
+      "format":			"raw",
+      "output_directory":	"output-qemu-{{user `system`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
+    },
+    {
+      "type":			"vmware-iso",
+      "vmx_data":		{ "memsize": "{{user `memory_mb`}}", "ethernet0.networkName": "{{user `packer_esx_remote_network`}}" },
+      "headless":		"{{user `build_vmw_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"{{user `system`}}",
+      "output_directory":	"output-vmware-{{user `system`}}",
+      "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+      "vmx_data_post":		{ "usb.present": "TRUE", "usb.generic.allowHID": "TRUE" },
+
+      "remote_type":		"{{user `packer_esx_remote_type`}}",
+      "remote_host":		"{{user `packer_esx_remote_host`}}",
+      "remote_username":	"{{user `packer_esx_remote_user`}}",
+      "remote_password":	"{{user `packer_esx_remote_pass`}}",
+      "remote_datastore":	"{{user `packer_esx_remote_datastore`}}",
+      "vnc_disable_password":	"{{user `packer_vmware_vnc_passwordless`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "boot_wait":		"{{user `obsd_boot_wait`}}",
+      "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
+      "shutdown_command":	"{{user `obsd_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}"
+    },
+    {
+      "type":			"hyperv-iso",
+      "disk_size":		"{{user `disk_size_mb`}}",
+
+      "iso_url":		"{{user `mirrors_openbsd`}}/{{user `openbsd_install`}}",
+      "iso_checksum":		"{{user `openbsd_cksum`}}",
+      "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
+
+      "ssh_username":		"{{user `obsd_ssh_user`}}",
+      "ssh_password":		"{{user `obsd_ssh_pass`}}",
+      "switch_name": "NAT"
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "type": "file",
+      "source": "shared/openbsd/doas.conf",
+      "destination": "/tmp/doas.conf"
+    },
+    {
+      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "type": "shell",
+      "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
+    },
+    {
+      "type": "file",
+      "source": "shared/openbsd/redist/openup",
+      "destination": "/tmp/openup"
+    },
+    {
+      "environment_vars":
+      [
+        "BUILD_SHA={{user `build_sha`}}",
+        "BUILD_TS={{user `build_ts`}}",
+        "SYSTEM_TAG={{user `system`}}",
+        "OPENUP_MIRROR={{user `openup_mirror`}}",
+        "MIRROR={{user `mirrors_openbsd`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "shared/openbsd/stamp.sh",
+        "shared/openbsd/environs.sh",
+        "shared/openbsd/force-mp.sh"
+      ]
+    },
+    {
+      "environment_vars":
+      [
+        "GNUPG_MIRROR={{user `mirrors_gnupg`}}",
+        "GFSHARE_MIRROR={{user `mirrors_libgfshare`}}",
+        "YKDEV_MIRROR={{user `mirrors_ykdev`}}",
+        "MIRROR={{user `mirror`}}"
+      ],
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "{{user `system`}}-files/build-consul.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "direction": "download",
+      "source": "/usr/ports/packages/amd64/all/consul-0.7.5.tgz",
+      "destination": "consul-obsd-amd64-0.7.5.tgz"
+    },
+    {
+      "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
+      "type": "shell",
+      "inline": [ "rm /etc/hostname.*" ]
+    },
+    {
+      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
+      "type": "shell",
+      "scripts":
+      [
+        "shared/openbsd/sysprep.sh"
+      ]
+    }
+  ],
+  "post-processors":
+  [
+    {
+      "type": "artifice",
+      "files": "consul-obsd-amd64-0.7.5.tgz"
+    },
+    {
+      "type": "manifest",
+      "output": "manifests/{{user `system`}}.json"
+    }
+   ]
+}
