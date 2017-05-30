@@ -33,6 +33,10 @@ UUID=${bootuuid}  /boot           vfat    defaults          0       2
 UUID=${fsuuid}  /               ext4    defaults,noatime  0       1
 _EOF_
 
+cat > output-qemu-quo/workfiles/cmdline.txt <<_EOF_
+dwc_otg.lpm_enable=0 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+_EOF_
+
 # ssh _user_ keys
 rm -f output-qemu-quo/workfiles/ssh_user_rsa_key*
 ssh-keygen -f output-qemu-quo/workfiles/ssh_user_rsa_key -N '' -t rsa
@@ -50,10 +54,12 @@ add output-qemu-quo/system.img
 run
 resize2fs /dev/sda2
 mount /dev/sda2 /
+mount /dev/sda1 /boot
 copy-in output-qemu-quo/workfiles/fstab /etc
 mkdir /home/pi/.ssh
 copy-in output-qemu-quo/workfiles/authorized_keys /home/pi/.ssh
 copy-in output-qemu-quo/workfiles/ssh_host_rsa_key /etc/ssh
+copy-in output-qemu-quo/workfiles/cmdline.txt /boot
 ln-s /lib/systemd/system/ssh.service /etc/systemd/system/multi-user.target.wants/ssh.service
 _EOF_
 
