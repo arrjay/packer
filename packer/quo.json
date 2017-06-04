@@ -1,4 +1,7 @@
 {
+  "variables": {
+    "system": "quo"
+  },
   "builders": [
     {
       "type": "null",
@@ -10,6 +13,13 @@
     }
   ],
   "provisioners": [
+    {
+      "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",
+      "type":			"shell",
+      "scripts": [
+        "{{ user `system` }}-files/consul.sh"
+      ]
+    },
     {
       "type": "shell",
       "inline": "sudo apt update && sudo apt -y upgrade && sudo apt -y install at && echo 'sudo poweroff' | at now + 1 minutes"
