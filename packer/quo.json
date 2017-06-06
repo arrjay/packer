@@ -6,9 +6,9 @@
     {
       "type": "null",
       "ssh_host": "127.0.0.1",
-      "ssh_username": "pi",
+      "ssh_username": "root",
       "ssh_port": "8222",
-      "ssh_private_key_file": "output-qemu-quo/workfiles/ssh_user_rsa_key",
+      "ssh_password": "linux",
       "ssh_timeout": "20m"
     }
   ],
@@ -22,7 +22,7 @@
     },
     {
       "type": "shell",
-      "inline": "sudo apt update && sudo apt -y upgrade && sudo apt -y install at && echo 'sudo poweroff' | at now + 1 minutes"
+      "inline": "zypper --non-interactive up -y && zypper --non-interactive in -y at && service atd start && echo 'poweroff' | at now + 1 minutes"
     }
   ]
 }
