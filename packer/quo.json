@@ -1,6 +1,10 @@
 {
   "variables": {
-    "system": "quo"
+    "system":		"quo",
+    "transit_vlan":	"{{ env `TRANSIT_VLAN_ID` }}",
+    "virthost_vlan":	"{{ env `VIRTHOST_VLAN_ID` }}",
+    "transit_ip":	"{{ env `QUO_TRANSIT_IP` }}",
+    "virthost_ip":	"{{ env `QUO_VIRTHOST_IP` }}"
   },
   "builders": [
     {
@@ -25,6 +29,7 @@
       "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",
       "type":			"shell",
       "scripts": [
+        "{{ user `system` }}-files/interfaces.sh",
         "{{ user `system` }}-files/consul.sh",
         "{{ user `system` }}-files/dhcpd.sh",
         "{{ user `system` }}-files/metrics.sh"
