@@ -4,7 +4,8 @@
     "transit_vlan":	"{{ env `TRANSIT_VLAN_ID` }}",
     "virthost_vlan":	"{{ env `VIRTHOST_VLAN_ID` }}",
     "transit_ip":	"{{ env `QUO_TRANSIT_IP` }}",
-    "virthost_ip":	"{{ env `QUO_VIRTHOST_IP` }}"
+    "virthost_ip":	"{{ env `QUO_VIRTHOST_IP` }}",
+    "default_gw_ip":	"{{ env `EFW_INTERNAL_IP` }}"
   },
   "builders": [
     {
@@ -28,6 +29,14 @@
     {
       "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",
       "type":			"shell",
+      "environment_vars":
+      [
+        "TRANSIT_VLAN_ID={{user `transit_vlan`}}",
+        "VIRTHOST_VLAN_ID={{user `virthost_vlan`}}",
+        "TRANSIT_IP={{user `transit_ip`}}",
+        "VIRTHOST_IP={{user `virthost_ip`}}",
+        "DEFAULT_GW_IP={{user `default_gw_ip`}}"
+      ],
       "scripts": [
         "{{ user `system` }}-files/interfaces.sh",
         "{{ user `system` }}-files/consul.sh",
