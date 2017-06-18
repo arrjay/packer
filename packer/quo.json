@@ -14,6 +14,10 @@
   ],
   "provisioners": [
     {
+      "type": "shell",
+      "inline": "zypper --non-interactive up -y"
+    },
+    {
       "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",
       "type":			"shell",
       "scripts": [
@@ -22,7 +26,30 @@
     },
     {
       "type": "shell",
-      "inline": "zypper --non-interactive up -y && zypper --non-interactive in -y at && service atd start && echo 'poweroff' | at now + 1 minutes"
+      "inline": "mkdir -p /var/lib/px-firstboot && mkdir -p /usr/libexec/px-firstboot"
+    },
+    {
+      "type": "file",
+      "source": "shared/px-firstboot/px-firstboot.service",
+      "destination": "/etc/systemd/system/px-firstboot.service"
+    },
+    {
+      "type": "file",
+      "source": "shared/px-firstboot/startup.sh",
+      "destination": "/usr/libexec/px-firstboot/startup"
+    },
+    {
+      "type": "file",
+      "source": "shared/opensuse/firstboot-dracut.sh",
+      "destination": "/usr/libexec/px-firstboot/dracut-update.sh"
+    },
+    {
+      "type": "shell",
+      "inline": "cd /etc/systemd/system/multi-user.target.wants && ln -s /etc/systemd/system/px-firstboot.service"
+    },
+    {
+      "type": "shell",
+      "inline": "zypper --non-interactive in -y at && service atd start && echo 'poweroff' | at now + 1 minutes"
     }
   ]
 }

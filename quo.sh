@@ -37,7 +37,9 @@ newdisk_hex=$(dd if=output-qemu-quo/system.img bs=512 count=1 2> /dev/null | xxd
 dm_hex=""
 dcount=0
 for w in $newdisk_hex ; do
+  set +e
   ((dcount++))
+  set -e
   case $dcount in
     6)
       w=${diskid:6:2}${diskid:4:2}
