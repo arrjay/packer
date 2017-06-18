@@ -15,13 +15,19 @@
   "provisioners": [
     {
       "type": "shell",
+      "inline": "echo '{{ user `system` }}' > /etc/hostname"
+    },
+    {
+      "type": "shell",
       "inline": "zypper --non-interactive up -y"
     },
     {
       "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",
       "type":			"shell",
       "scripts": [
-        "{{ user `system` }}-files/consul.sh"
+        "{{ user `system` }}-files/consul.sh",
+        "{{ user `system` }}-files/dhcpd.sh",
+        "{{ user `system` }}-files/metrics.sh"
       ]
     },
     {
