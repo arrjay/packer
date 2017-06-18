@@ -1,0 +1,3 @@
+[submodule "shared/px-firstboot"]
+	path = shared/px-firstboot
+	url = https://github.com/arrjay/px-firstboot
