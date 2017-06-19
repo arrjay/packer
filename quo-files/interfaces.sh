@@ -11,7 +11,7 @@ set -eux
 zypper install -y vlan
 
 # this configures interfaces for _next_ reboot
-sed -i -e 's/^BOOTPROTO=.*//' /etc/sysconfig/network-scripts/ifcfg-eth0
+sed -i -e 's/^BOOTPROTO=.*//' /etc/sysconfig/network/ifcfg-eth0
 {
   printf "STARTMODE='auto'\n"
   printf "BOOTPROTO='static'\n"
@@ -23,7 +23,7 @@ sed -i -e 's/^BOOTPROTO=.*//' /etc/sysconfig/network-scripts/ifcfg-eth0
 {
   printf "STARTMODE='auto'\n"
   printf "BOOTPROTO='static'\n"
-  printf "IPADDR=%s\n" "%{VIRTHOST_IP}"
+  printf "IPADDR=%s\n" "${VIRTHOST_IP}"
   printf "VLAN='yes'\n"
   printf "ETHERDEVICE='eth0'\n"
 } > "/etc/sysconfig/network/ifcfg-vlan${VIRTHOST_VLAN_ID}"
