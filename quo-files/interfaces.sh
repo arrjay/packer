@@ -8,7 +8,7 @@ set -eux
 [ ! -z "${VIRTHOST_IP}" ]
 [ ! -z "${DEFAULT_GW_IP}" ]
 
-zypper install vlan
+zypper install -y vlan
 
 # this configures interfaces for _next_ reboot
 sed -i -e 's/^BOOTPROTO=.*//' /etc/sysconfig/network-scripts/ifcfg-eth0
