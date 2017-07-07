@@ -18,7 +18,7 @@
   "obsd_boot2":		"<enter>",
 
   "iso_comment":	"iso locations and checksums",
-  "c7_netinstall":	"centos/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
+  "c7_netinstall":	"7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
   "c7_netinstall_cksum":	"f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
   "c7_netinstall_cksum_type":	"sha256",
   "openbsd_install":    "pub/OpenBSD/6.1/amd64/install61.iso",
