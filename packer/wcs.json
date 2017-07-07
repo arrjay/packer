@@ -106,6 +106,16 @@
       "destination": "/tmp/squid.conf"
     },
     {
+      "type": "file",
+      "source": "{{user `system`}}-files/RPM-GPG-varnish5",
+      "destination": "/tmp/RPM-GPG-varnish5"
+    },
+    {
+      "type": "file",
+      "source": "{{user `system`}}-files/varnish5.repo",
+      "destination": "/tmp/varnish5.repo"
+    },
+    {
       "environment_vars":
       [
         "WCS_TLD={{user `wcs_tld`}}"
@@ -113,6 +123,7 @@
       "type": "shell",
       "scripts":
       [
+        "wcs-files/varnish.sh",
         "wcs-files/squid.sh"
       ]
     }
