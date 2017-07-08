@@ -85,9 +85,9 @@
       "type": "shell",
       "scripts":
       [
-        "shared/centos/stamp.sh",
-        "shared/centos/epel.sh",
-        "shared/centos/augeas.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/epel.sh",
+        "shared/scripts/augeas.sh"
       ]
     },
     {
