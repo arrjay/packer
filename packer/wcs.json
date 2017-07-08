@@ -80,7 +80,7 @@
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
-        "MIRROR={{user `mirrors_kernel_org`}}"
+        "EPEL_MIRROR={{user `epel_mirror`}}"
       ],
       "type": "shell",
       "scripts":
