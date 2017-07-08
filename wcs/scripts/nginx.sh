@@ -42,6 +42,10 @@ printf 'location ^~ /centos-altarch/ {\nproxy_pass http://mirror.centos.org/alta
 
 printf 'location ^~ /opensuse/ {\nproxy_pass http://download.opensuse.org/;\n}\n' > /etc/nginx/default.d/opensuse.conf
 
+printf 'location ^~ /gnupg/ {\nproxy_pass https://gnupg.org/ftp/gcrypt/;\n}\n' > /etc/nginx/default.d/gnupg.conf
+printf 'location ^~ /libgfshare/ {\nproxy_pass http://www.digital-scurf.org/files/libgfshare;\n}\n' > /etc/nginx/default.d/libgfshare.conf
+printf 'location ^~ /yk-piv/ {\nproxy_pass https://developers.yubico.com/yubico-piv-tool/Releases/;\n}\n' > /etc/nginx/default.d/yk-piv.conf
+
 nginx -t
 
 mkdir -p /etc/systemd/system/nginx.service.requires
