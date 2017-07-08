@@ -35,10 +35,13 @@ printf 'location ^~ /epel/ {\nproxy_pass https://mirrors.kernel.org/fedora-epel/
 printf 'location ^~ /centos-altarch/ {\nproxy_pass http://mirror.centos.org/altarch/;\n}\n' > /etc/nginx/default.d/centos-altarch.conf
 
 {
-  printf 'location ^~ /OpenBSD/ {\nproxy_pass https://mirrors.sonic.net/pub/OpenBSD/;\n}\n;'
-  printf 'location ^~ /openbsd/ {\nrewrite ^/openbsd(.*) /OpenBSD$1 last;\n}\n;'
-  printf 'location ^~ /pub/OpenBSD/ {\nrewrite ^/pub(.*)$ $1 last;\n}\n;'
+  printf 'location ^~ /OpenBSD/ {\nproxy_pass https://mirrors.sonic.net/pub/OpenBSD/;\n}\n'
+  printf 'location ^~ /openbsd/ {\nrewrite ^/openbsd(.*) /OpenBSD$1 last;\n}\n'
+  printf 'location ^~ /pub/OpenBSD/ {\nrewrite ^/pub(.*)$ $1 last;\n}\n'
 } > /etc/nginx/default.d/openbsd.conf
+
+printf 'location ^~ /opensuse/ {\nproxy_pass http://download.opensuse.org/;\n}\n' > /etc/nginx/default.d/opensuse.conf
+
 nginx -t
 
 mkdir -p /etc/systemd/system/nginx.service.requires
