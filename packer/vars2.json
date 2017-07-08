@@ -11,6 +11,7 @@
 
   "boot_strings_comment":	"common bootloader strings for boot_command",
   "c7_bios_boot":	"<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
+  "c7_32_bios_boot":	"<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20i686 net.ifnames=0 ",
   "c7_bios_boot2":	"<enter>",
   "c7_efi_boot":	"c linuxefi /images/pxeboot/vmlinuz inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
   "c7_efi_boot2":	"<enter>initrdefi /images/pxeboot/initrd.img<enter>boot<enter>",
