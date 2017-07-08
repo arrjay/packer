@@ -28,7 +28,7 @@
       "boot_command":	"{{user `c7_efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}} console=ttyS0{{user `c7_efi_boot2`}}",
       "shutdown_command":	"{{user `c7_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_timeout":		"{{user `c7_inst_timeout`}}",
       "ssh_username":		"{{user `c7_ssh_user`}}",
       "ssh_password":		"{{user `c7_ssh_pass`}}"
@@ -92,18 +92,8 @@
     },
     {
       "type": "file",
-      "source": "wcs-files/squid-svcs/datavol.sh",
-      "destination": "/tmp/datavol.sh"
-    },
-    {
-      "type": "file",
-      "source": "wcs-files/squid-svcs/datavol.unit",
-      "destination": "/tmp/datavol.unit"
-    },
-    {
-      "type": "file",
-      "source": "wcs-files/squid.conf",
-      "destination": "/tmp/squid.conf"
+      "source": "{{user `system`}}/files/",
+      "destination": "/tmp/"
     },
     {
       "environment_vars":
@@ -113,8 +103,8 @@
       "type": "shell",
       "scripts":
       [
-        "wcs-files/nginx.sh",
-        "wcs-files/squid.sh"
+        "{{user `system`}}/scripts/nginx.sh",
+        "{{user `system`}}/scripts/squid.sh"
       ]
     }
   ]
