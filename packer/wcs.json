@@ -103,8 +103,10 @@
       "type": "shell",
       "scripts":
       [
+        "{{user `system`}}/scripts/datavol.sh",
         "{{user `system`}}/scripts/nginx.sh",
-        "{{user `system`}}/scripts/squid.sh"
+        "{{user `system`}}/scripts/squid.sh",
+        "{{user `system`}}/scripts/firewalld.sh"
       ]
     }
   ]
