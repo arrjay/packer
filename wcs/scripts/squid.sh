@@ -14,4 +14,4 @@ echo "configuring and enabling squid"
 mv -f /tmp/squid.conf /etc/squid/squid.conf
 chmod 0644 /etc/squid/squid.conf
 restorecon /etc/squid/squid.conf
-ln -s /usr/lib/systemd/system/squid.service /etc/systemd/system/multi-user.target.wants/squid.service
+#ln -s /usr/lib/systemd/system/squid.service /etc/systemd/system/multi-user.target.wants/squid.service

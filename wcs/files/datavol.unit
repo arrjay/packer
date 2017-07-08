@@ -1,5 +1,5 @@
 [Unit]
-Description=Setup Squid Data Volume
+Description=Setup /srv Data Volume
 After=local-fs.target
 
 [Service]
