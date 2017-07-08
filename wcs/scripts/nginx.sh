@@ -48,6 +48,8 @@ printf 'location ^~ /yk-piv/ {\nproxy_pass https://developers.yubico.com/yubico-
 
 printf 'location ^~ /copr-arrjay/ {\nproxy_pass https://copr-be.cloud.fedoraproject.org/results/arrjay/;\n}\n' > /etc/nginx/default.d/copr-arrjay.conf
 
+printf 'location ^~ /hashicorp/ {\nproxy_pass https://releases.hashicorp.com/;\n}\n' > /etc/nginx/default.d/hashicorp.conf
+
 nginx -t
 
 mkdir -p /etc/systemd/system/nginx.service.requires
