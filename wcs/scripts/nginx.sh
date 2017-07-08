@@ -22,6 +22,10 @@ printf 'upstream mirrors.kernel.org {\nserver mirrors.kernel.org:443;\n}\n' > /e
   printf 'proxy_cache_use_stale error timeout updating;\nadd_header X-Cache-Status $upstream_cache_status;\nproxy_intercept_errors on;\n'
   printf 'proxy_cache wcs_cache;\nproxy_cache_lock on;\nproxy_cache_valid 200 206 8h;\nproxy_cache_valid any 5m;\n'
 } > /etc/nginx/default.d/00-proxy-cache.conf
+{
+  printf 'location ~*\.(deb|exe|fs|img|iso|pdf|rpm|tar\.(bz2|gz|xz)|tgz|zip)$ {\nproxy_cache_valid 200 206 7d;\n}\n'
+  printf 'location ~*vmlinuz {\nproxy_cache_valid 200 206 7d;\n}\n'
+} > /etc/nginx/default.d/50-proxy-ext.conf
 
 nginx -t
 
