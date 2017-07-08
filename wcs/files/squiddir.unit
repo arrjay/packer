@@ -1,0 +1,11 @@
+[Unit]
+Description=Setup Squid Data Dir
+Requires=datavol.service
+After=datavol.service
+Before=squid.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/squiddir.sh
+RemainAfterExit=true
+StandardOutput=journal
