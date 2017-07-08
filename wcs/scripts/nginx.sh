@@ -27,6 +27,11 @@ printf 'upstream mirrors.kernel.org {\nserver mirrors.kernel.org:443;\n}\n' > /e
   printf 'location ~*vmlinuz {\nproxy_cache_valid 200 206 7d;\n}\n'
 } > /etc/nginx/default.d/50-proxy-ext.conf
 
+printf 'location ^~ /centos/ {\nproxy_pass https://mirrors.kernel.org/centos/;\n}\n' > /etc/nginx/default.d/centos.conf
+printf 'location ^~ /ubuntu/ {\nproxy_pass https://mirrors.kernel.org/ubuntu/;\n}\n' > /etc/nginx/default.d/ubuntu.conf
+printf 'location ^~ /fedora/ {\nproxy_pass https://mirrors.kernel.org/fedora/;\n}\n' > /etc/nginx/default.d/fedora.conf
+printf 'location ^~ /epel/ {\nproxy_pass https://mirrors.kernel.org/fedora-epel/;\n}\n' > /etc/nginx/default.d/epel.conf
+
 nginx -t
 
 mkdir -p /etc/systemd/system/nginx.service.requires
