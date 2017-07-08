@@ -1,0 +1,11 @@
+[Unit]
+Description=Setup NGINX Data Dir
+Requires=datavol.service
+After=datavol.service
+Before=nginx.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nginxdir.sh
+RemainAfterExit=true
+StandardOutput=journal
