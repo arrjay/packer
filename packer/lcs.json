@@ -1,0 +1,109 @@
+{
+  "variables": {
+    "wcs_tld":			"cache.{{env `TOPLEVEL_DOMAIN`}}",
+    "system":			"lcs",
+    "disk_size_mb":		"9216",
+    "data_disk_size_mb":	"18432"
+  },
+  "builders":
+  [
+    {
+      "type":			"qemu",
+      "qemuargs":
+      [
+        [ "-serial", "file:{{user `system`}}-build-console.log" ]
+      ],
+      "headless":		"{{user `packer_qemu_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"system.qcow2",
+      "output_directory":	"output-qemu-{{user `system`}}",
+
+      "iso_url":		"{{user `centos_mirror`}}{{user `c7_netinstall`}}",
+      "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
+      "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
+
+      "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}} console=ttyS0{{user `c7_bios_boot2`}}",
+      "shutdown_command":	"{{user `c7_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}/http",
+      "ssh_timeout":		"{{user `c7_inst_timeout`}}",
+      "ssh_username":		"{{user `c7_ssh_user`}}",
+      "ssh_password":		"{{user `c7_ssh_pass`}}"
+    },
+    {
+      "type":			"vmware-iso",
+      "vmx_data":
+      {
+        "firmware":			"bios",
+        "virtualhw.version":		"10",
+        "tools.upgrade.policy":		"manual",
+        "scsi0.virtualdev":		"pvscsi",
+        "ethernet0.virtualdev":		"vmxnet3",
+        "ethernet0.networkName":	"{{user `packer_esx_remote_network`}}"
+      },
+      "headless":		"{{user `build_vmw_headless`}}",
+      "disk_size":		"{{user `disk_size_mb`}}",
+      "vm_name":		"{{user `system`}}-{{user `build_ts`}}",
+      "output_directory":	"output-vmware-{{user `system`}}",
+      "keep_registered":	"{{user `packer_vmware_keep_registered`}}",
+      "vmx_data_post":		{ "vcpu.hotadd": true, "mem.hotadd": true },
+      "disk_additional_size":	"{{user `data_disk_size_mb`}}",
+
+      "remote_type":		"{{user `packer_esx_remote_type`}}",
+      "remote_host":		"{{user `packer_esx_remote_host`}}",
+      "remote_username":	"{{user `packer_esx_remote_user`}}",
+      "remote_password":	"{{user `packer_esx_remote_pass`}}",
+      "remote_datastore":	"{{user `packer_esx_remote_datastore`}}",
+      "vnc_disable_password":	"{{user `packer_vmware_vnc_passwordless`}}",
+
+      "iso_url":		"{{user `mirrors_kernel_org`}}/{{user `c7_netinstall`}}",
+      "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
+      "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
+
+      "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}}{{user `c7_bios_boot2`}}",
+      "shutdown_command":	"{{user `c7_shutdown`}}",
+
+      "http_directory":		"{{user `system`}}-files",
+      "ssh_timeout":		"{{user `c7_inst_timeout`}}",
+      "ssh_username":		"{{user `c7_ssh_user`}}",
+      "ssh_password":		"{{user `c7_ssh_pass`}}"
+    }
+  ],
+  "provisioners":
+  [
+    {
+      "environment_vars":
+      [
+        "BUILD_SHA={{user `build_sha`}}",
+        "BUILD_TS={{user `build_ts`}}",
+        "SYSTEM_TAG={{user `system`}}",
+        "EPEL_MIRROR={{user `epel_mirror`}}"
+      ],
+      "type": "shell",
+      "scripts":
+      [
+        "shared/scripts/stamp.sh",
+        "shared/scripts/epel.sh",
+        "shared/scripts/augeas.sh"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "{{user `system`}}/files/",
+      "destination": "/tmp/"
+    },
+    {
+      "environment_vars":
+      [
+        "WCS_TLD={{user `wcs_tld`}}"
+      ],
+      "type": "shell",
+      "scripts":
+      [
+        "{{user `system`}}/scripts/datavol.sh",
+        "{{user `system`}}/scripts/nginx.sh",
+        "{{user `system`}}/scripts/firewalld.sh"
+      ]
+    }
+  ]
+}

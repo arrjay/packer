@@ -19,8 +19,8 @@ nms - DHCP Server / DNS authority. can lookup internal names
 Auxiliary Systems
 =================
 
-wcs - Web cache. Squid configured as backwards and forwards proxy.
-lcs - Web cache. Squid configured as backwards and forwards proxy, connected
+wcs - Web cache. Nginx configured as forward proxy.
+lcs - Web cache. Nginx configured as forward proxy, connected
       to wcs.
 log - statistics collection and logging endpoint. syslog + snmp / misc polls.
 kam - Key Access Manager. Typically offline, for CA + other crypto bits.

@@ -1,0 +1,1 @@
+../../wcs/scripts/firewalld.sh
