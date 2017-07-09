@@ -1,6 +1,6 @@
 {
   "variables": {
-    "system":		"consul-builder",
+    "system":		"cbl",
     "disk_size_mb":	"36864",
     "memory_mb":	"1024"
   },
@@ -23,7 +23,7 @@
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
       "shutdown_command":	"{{user `obsd_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_username":		"{{user `obsd_ssh_user`}}",
       "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
@@ -52,7 +52,7 @@
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
       "shutdown_command":	"{{user `obsd_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_username":		"{{user `obsd_ssh_user`}}",
       "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
@@ -73,8 +73,8 @@
   [
     {
       "type": "file",
-      "source": "shared/openbsd/doas.conf",
-      "destination": "/tmp/doas.conf"
+      "source": "shared/files/openbsd/",
+      "destination": "/tmp/"
     },
     {
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
@@ -82,41 +82,29 @@
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
     },
     {
-      "type": "file",
-      "source": "shared/openbsd/redist/openup",
-      "destination": "/tmp/openup"
-    },
-    {
       "environment_vars":
       [
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
-        "OPENUP_MIRROR={{user `openup_mirror`}}",
         "MIRROR={{user `mirrors_openbsd`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/stamp.sh",
-        "shared/openbsd/environs.sh",
-        "shared/openbsd/force-mp.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/environs.sh",
+        "shared/scripts/force-mp.sh",
+        "shared/scripts/system-update.sh"
       ]
     },
     {
-      "environment_vars":
-      [
-        "GNUPG_MIRROR={{user `mirrors_gnupg`}}",
-        "GFSHARE_MIRROR={{user `mirrors_libgfshare`}}",
-        "YKDEV_MIRROR={{user `mirrors_ykdev`}}",
-        "MIRROR={{user `mirror`}}"
-      ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
-        "{{user `system`}}-files/build-consul.sh"
+        "{{user `system`}}/scripts/build-consul.sh"
       ]
     },
     {
@@ -135,7 +123,7 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/sysprep.sh"
+        "shared/scripts/sysprep.sh"
       ]
     }
   ],

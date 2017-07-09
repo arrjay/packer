@@ -22,7 +22,7 @@
   "c7_netinstall":	"7/isos/x86_64/CentOS-7-x86_64-NetInstall-1611.iso",
   "c7_netinstall_cksum":	"f2f7367deb90a25822947660c71638333ca0eceeabecc2d631be6cd508c24494",
   "c7_netinstall_cksum_type":	"sha256",
-  "openbsd_install":    "pub/OpenBSD/6.1/amd64/install61.iso",
+  "openbsd_install":    "OpenBSD/6.1/amd64/install61.iso",
   "openbsd_cksum":	"dfb4bf2408d993645ef9560e6913be48ca6e854322c42156954d4da93d450fd9",
   "openbsd_cksum_type":	"sha256",
 
