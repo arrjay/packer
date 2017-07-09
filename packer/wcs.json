@@ -66,7 +66,7 @@
       "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}}{{user `c7_bios_boot2`}}",
       "shutdown_command":	"{{user `c7_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_timeout":		"{{user `c7_inst_timeout`}}",
       "ssh_username":		"{{user `c7_ssh_user`}}",
       "ssh_password":		"{{user `c7_ssh_pass`}}"
