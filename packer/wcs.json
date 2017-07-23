@@ -16,6 +16,7 @@
         [ "-drive", "file=output-qemu-{{user `system`}}-nvram.fd,if=pflash,format=raw,unit=1" ],
         [ "-drive", "file=output-qemu-{{user `system`}}/system.qcow2,if=virtio" ]
       ],
+      "qemu_binary":           "{{user `qemu_binary`}}",
       "headless":		"{{user `packer_qemu_headless`}}",
       "disk_size":		"{{user `disk_size_mb`}}",
       "vm_name":		"system.qcow2",

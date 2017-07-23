@@ -7,6 +7,14 @@ export ATLAS_BUILD_SLUG="arrjay/infra"
 export BUILD_TIMESTAMP=$(date +%s)
 export PASSWORD_STORE_DIR=$(pwd)/vault
 export PACKER_ENV_DIR=$(pwd)/packer_env
+type qemu-system-x86_64 > /dev/null
+if [ "${?}" -ne 0 ] ; then
+  if [ -f /usr/libexec/qemu-kvm ] ; then
+    PACKER_BUILD_FLAGS+=" -var qemu_binary=/usr/libexec/qemu-kvm"
+  fi
+else
+  PACKER_BUILD_FLAGS+=" -var qemu_binary=qemu-system-x86_64"
+fi
 
 case "${uname_s}" in
   Darwin)

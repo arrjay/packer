@@ -13,6 +13,7 @@
       [
         [ "-serial", "file:{{user `system`}}-build-console.log" ]
       ],
+      "qemu_binary":		"{{user `qemu_binary`}}",
       "headless":		"{{user `packer_qemu_headless`}}",
       "disk_size":		"{{user `disk_size_mb`}}",
       "vm_name":		"system.qcow2",
