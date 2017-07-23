@@ -1,7 +1,7 @@
 {
   "variables": {
     "system":		"kam",
-    "disk_size_mb":	"9216",
+    "disk_size_mb":	"13824",
     "memory_mb":	"1024"
   },
   "builders":
@@ -23,7 +23,7 @@
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
       "shutdown_command":	"{{user `obsd_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_username":		"{{user `obsd_ssh_user`}}",
       "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
@@ -52,7 +52,7 @@
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
       "shutdown_command":	"{{user `obsd_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_username":		"{{user `obsd_ssh_user`}}",
       "ssh_password":		"{{user `obsd_ssh_pass`}}"
     },
@@ -73,8 +73,8 @@
   [
     {
       "type": "file",
-      "source": "shared/openbsd/doas.conf",
-      "destination": "/tmp/doas.conf"
+      "source": "shared/files/openbsd/",
+      "destination": "/tmp/"
     },
     {
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
@@ -82,58 +82,28 @@
       "inline": [ "mv /tmp/doas.conf /etc/doas.conf && chown root:wheel /etc/doas.conf" ]
     },
     {
-      "type": "file",
-      "source": "shared/openbsd/redist/openup",
-      "destination": "/tmp/openup"
-    },
-    {
       "environment_vars":
       [
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
-        "OPENUP_MIRROR={{user `openup_mirror`}}",
         "MIRROR={{user `mirrors_openbsd`}}"
       ],
       "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{ .Path }}",
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/stamp.sh",
-        "shared/openbsd/environs.sh",
-        "shared/openbsd/force-mp.sh",
-        "kam-files/tmpfs.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/environs.sh",
+        "shared/scripts/force-mp.sh",
+        "shared/scripts/system-update.sh",
+        "{{user `system`}}/scripts/tmpfs.sh"
       ]
     },
     {
       "type": "file",
-      "source": "kam-files/save.sh",
-      "destination": "/tmp/save.sh"
-    },
-    {
-      "type": "file",
-      "source": "kam-files/libassuan-assuan-socket.c.patch",
-      "destination": "/tmp/libassuan-assuan-socket.c.patch"
-    },
-    {
-      "type": "file",
-      "source": "kam-files/key-twincard.sh",
-      "destination": "/tmp/key-twincard.sh"
-    },
-    {
-      "type": "file",
-      "source": "kam-files/weighted-share.sh",
-      "destination": "/tmp/weighted-share.sh"
-    },
-    {
-      "type": "file",
-      "source": "kam-files/reset-yk-applet.gp",
-      "destination": "/tmp/reset-yk-applet.gp"
-    },
-    {
-      "type": "file",
-      "source": "kam-files/reset-yk-applet.sh",
-      "destination": "/tmp/reset-yk-applet.sh"
+      "source": "{{user `system`}}/files/",
+      "destination": "/tmp/"
     },
     {
       "environment_vars":
@@ -147,12 +117,12 @@
       "type": "shell",
       "scripts":
       [
-        "kam-files/autotools.sh",
-        "kam-files/gnupg.sh",
-        "kam-files/libgfshare.sh",
-        "kam-files/yubico-piv-tool.sh",
-        "kam-files/diskdeps.sh",
-        "kam-files/xinit.sh"
+        "{{user `system`}}/scripts/autotools.sh",
+        "{{user `system`}}/scripts/gnupg.sh",
+        "{{user `system`}}/scripts/libgfshare.sh",
+        "{{user `system`}}/scripts/yubico-piv-tool.sh",
+        "{{user `system`}}/scripts/diskdeps.sh",
+        "{{user `system`}}/scripts/xinit.sh"
       ]
     },
     {
@@ -165,7 +135,7 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/sysprep.sh"
+        "shared/scripts/sysprep.sh"
       ]
     }
   ],

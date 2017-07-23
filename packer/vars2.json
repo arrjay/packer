@@ -7,7 +7,7 @@
 
   "timing_comment":	"common os installation timeouts (how long to wait for ssh to show, how long to wait to start a boot command)",
   "c7_inst_timeout":	"30m",
-  "obsd_boot_wait":	"20s",
+  "obsd_boot_wait":	"25s",
 
   "boot_strings_comment":	"common bootloader strings for boot_command",
   "c7_bios_boot":	"<tab><leftCtrlOn>u<leftCtrlOff>vmlinuz initrd=initrd.img inst.stage2=hd:LABEL=CentOS\\x207\\x20x86_64 net.ifnames=0 ",
