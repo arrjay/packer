@@ -112,7 +112,7 @@
       "type": "file",
       "direction": "download",
       "source": "/usr/ports/packages/amd64/all/consul-0.7.5.tgz",
-      "destination": "shared/openbsd/redist/"
+      "destination": "shared/files/openbsd/"
     },
     {
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
@@ -132,7 +132,7 @@
   [
     {
       "type": "artifice",
-      "files": "shared/openbsd/redist/consul-0.7.5.tgz"
+      "files": "shared/files/openbsd/consul-0.7.5.tgz"
     },
     {
       "type": "manifest",
