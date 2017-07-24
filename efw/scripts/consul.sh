@@ -2,7 +2,8 @@
 
 set -e
 
-pkg_add consul jq
+pkg_add jq
+pkg_add -D unsigned /tmp/consul-0.7.5.tgz
 
 mkdir -p /usr/local/etc
 
@@ -41,9 +42,9 @@ for j in /etc/consul.d/*.json ; do
 done
 
 mkdir -p /usr/local/libexec/consul-checks
-cp /tmp/efw-bgpd.sh /usr/local/libexec/consul-checks
+cp /tmp/consul-check-efw-bgpd.sh /usr/local/libexec/consul-checks/efw-bgpd.sh
 chmod 0755 /usr/local/libexec/consul-checks/*
-rm -f /tmp/efw-bgpd.sh
+rm -f /tmp/consul-check-efw-bgpd.sh
 
 rcctl enable consul
 rcctl set consul flags "-config-dir=/etc/consul.d -bind=$(dirname ${TRANSIT_IP})"
