@@ -108,7 +108,7 @@
     },
     {
       "type": "file",
-      "source": "shared/openbsd/redist/",
+      "source": "shared/files/openbsd/",
       "destination": "/tmp/"
     },
     {
