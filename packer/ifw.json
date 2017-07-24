@@ -21,6 +21,7 @@
   [
     {
       "type":			"qemu",
+      "qemu_binary":            "{{user `qemu_binary`}}",
       "headless":		"{{user `packer_qemu_headless`}}",
       "disk_size":		"{{user `disk_size_mb`}}",
       "vm_name":		"system.{{user `qemu_disk_format`}}",
@@ -32,7 +33,7 @@
       "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
 
       "boot_wait":		"{{user `obsd_boot_wait`}}",
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
 
       "shutdown_command":	"{{user `obsd_shutdown`}}",
@@ -84,7 +85,7 @@
       "iso_checksum_type":	"{{user `openbsd_cksum_type`}}",
 
       "boot_wait":		"{{user `obsd_boot_wait`}}",
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
 
       "shutdown_command":	"{{user `obsd_shutdown`}}",
@@ -96,8 +97,8 @@
   [
     {
       "type": "file",
-      "source": "shared/openbsd/doas.conf",
-      "destination": "/tmp/doas.conf"
+      "source": "shared/files/openbsd/",
+      "destination": "/tmp/"
     },
     {
       "execute_command": "echo packer {{user `obsd_su_pipe`}} 'env {{ .Vars }} {{ .Path }}'",
@@ -116,33 +117,21 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/stamp.sh",
-        "shared/openbsd/vgacon.sh",
-        "shared/openbsd/environs.sh"
-      ]
-    },
-    {
-      "execute_command": "chmod +x {{ .Path }}; doas env {{ .Vars }} {{.Path }}",
-      "type": "shell",
-      "scripts":
-      [
-        "shared/openbsd/ovfenv.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/vgacon.sh",
+        "shared/scripts/environs.sh",
+        "shared/scripts/ovfenv.sh"
       ]
     },
     {
       "type": "file",
-      "source": "consul-obsd-amd64-0.7.5.tgz",
-      "destination": "/tmp/consul-0.7.5.tgz"
+      "source": "shared/files/openbsd/",
+      "destination": "/tmp/"
     },
     {
       "type": "file",
-      "source": "shared/openbsd/consul-server.awk",
-      "destination": "/tmp/consul-server.awk"
-    },
-    {
-      "type": "file",
-      "source": "ifw-files/consul.rc",
-      "destination": "/tmp/consul.rc"
+      "source": "{{user `system`}}/files/",
+      "destination": "/tmp/"
     },
     {
       "environment_vars":
@@ -167,10 +156,10 @@
       [
         "shared/openbsd/disable-ipv6.sh",
         "shared/openbsd/vmm-if.sh",
-        "ifw-files/bgpd.sh",
-        "ifw-files/pf-rules.sh",
-        "ifw-files/interfaces.sh",
-        "ifw-files/consul-sub.sh"
+        "{{user `system`}}/scripts/bgpd.sh",
+        "{{user `system`}}/scripts/pf-rules.sh",
+        "{{user `system`}}/scripts/interfaces.sh",
+        "{{user `system`}}/scripts/consul-sub.sh"
       ]
     },
     {
@@ -178,7 +167,7 @@
       "type": "shell",
       "scripts":
       [
-        "shared/openbsd/sysprep.sh"
+        "shared/scripts/sysprep.sh"
       ]
     }
   ],
