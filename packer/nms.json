@@ -21,26 +21,24 @@
   [
     {
       "type":			"qemu",
+      "qemu_binary":            "{{user `qemu_binary`}}",
       "qemuargs":
       [
-        [ "-serial", "file:{{user `system`}}-build-console.log" ],
-        [ "-drive", "{{user `packer_qemu_ovmfarg`}}" ],
-        [ "-drive", "file=output-qemu-{{user `system`}}-nvram.fd,if=pflash,format=raw,unit=1" ],
-        [ "-drive", "file=output-qemu-{{user `system`}}/system.qcow2,if=virtio" ]
+        [ "-serial", "file:{{user `serlogs`}}{{user `system`}}" ]
       ],
       "headless":		"{{user `packer_qemu_headless`}}",
       "disk_size":		"{{user `disk_size_mb`}}",
       "vm_name":		"system.qcow2",
       "output_directory":	"output-qemu-{{user `system`}}",
 
-      "iso_url":		"{{user `mirrors_kernel_org`}}/{{user `c7_netinstall`}}",
+      "iso_url":		"{{user `centos_mirror`}}/{{user `c7_netinstall`}}",
       "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
       "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
 
-      "boot_command":	"{{user `c7_efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `mirrors_kernel_org`}} console=ttyS0{{user `c7_efi_boot2`}}",
+      "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}} console=ttyS0{{user `c7_bios_boot2`}}",
       "shutdown_command":	"{{user `c7_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_timeout":		"{{user `c7_inst_timeout`}}",
       "ssh_username":		"{{user `c7_ssh_user`}}",
       "ssh_password":		"{{user `c7_ssh_pass`}}"
@@ -77,7 +75,7 @@
       "boot_command":	"{{user `c7_bios_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `mirrors_kernel_org`}}{{user `c7_bios_boot2`}}",
       "shutdown_command":	"{{user `c7_shutdown`}}",
 
-      "http_directory":		"{{user `system`}}-files",
+      "http_directory":		"{{user `system`}}/http",
       "ssh_timeout":		"{{user `c7_inst_timeout`}}",
       "ssh_username":		"{{user `c7_ssh_user`}}",
       "ssh_password":		"{{user `c7_ssh_pass`}}"
@@ -91,20 +89,20 @@
         "BUILD_SHA={{user `build_sha`}}",
         "BUILD_TS={{user `build_ts`}}",
         "SYSTEM_TAG={{user `system`}}",
-        "MIRROR={{user `mirrors_kernel_org`}}"
+        "EPEL_MIRROR={{user `epel_mirror`}}"
       ],
       "type": "shell",
       "scripts":
       [
-        "shared/centos/stamp.sh",
-        "shared/centos/epel.sh",
-        "shared/centos/augeas.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/epel.sh",
+        "shared/scripts/augeas.sh"
       ]
     },
     {
       "type": "file",
-      "source": "{{user `system`}}-files/update-dns",
-      "destination": "/tmp/update-dns"
+      "source": "{{user `system`}}/files/",
+      "destination": "/tmp/"
     },
     {
       "environment_vars":
@@ -127,13 +125,13 @@
       "type": "shell",
       "scripts":
       [
-        "{{user `system`}}-files/interfaces.sh",
-        "{{user `system`}}-files/named.sh",
-        "{{user `system`}}-files/auxpackages.sh",
-        "{{user `system`}}-files/tftpd.sh",
-        "{{user `system`}}-files/ntp.sh",
-        "{{user `system`}}-files/dhcpd.sh",
-        "{{user `system`}}-files/update-dns.sh"
+        "{{user `system`}}/scripts/interfaces.sh",
+        "{{user `system`}}/scripts/named.sh",
+        "{{user `system`}}/scripts/auxpackages.sh",
+        "{{user `system`}}/scripts/tftpd.sh",
+        "{{user `system`}}/scripts/ntp.sh",
+        "{{user `system`}}/scripts/dhcpd.sh",
+        "{{user `system`}}/scripts/update-dns.sh"
       ]
     }
   ]
