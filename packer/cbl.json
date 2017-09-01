@@ -9,6 +9,7 @@
     {
       "type":			"qemu",
       "qemuargs":		[ [ "-m", "{{user `memory_mb`}}" ] ],
+      "qemu_binary":            "{{user `qemu_binary`}}",
       "headless":		"{{user `packer_qemu_headless`}}",
       "disk_size":		"{{user `disk_size_mb`}}",
       "vm_name":		"system.img",
@@ -111,7 +112,7 @@
       "type": "file",
       "direction": "download",
       "source": "/usr/ports/packages/amd64/all/consul-0.7.5.tgz",
-      "destination": "consul-obsd-amd64-0.7.5.tgz"
+      "destination": "shared/files/openbsd/"
     },
     {
       "execute_command": "echo packer | su root -c 'env {{ .Vars }} {{ .Path }}'",
@@ -131,7 +132,7 @@
   [
     {
       "type": "artifice",
-      "files": "consul-obsd-amd64-0.7.5.tgz"
+      "files": "shared/files/openbsd/consul-0.7.5.tgz"
     },
     {
       "type": "manifest",

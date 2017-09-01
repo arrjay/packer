@@ -2,3 +2,5 @@ manifests/*
 packer_cache
 output-qemu-*
 *.swp
+console-logs/*
+shared/files/openbsd/consul-*.tgz
