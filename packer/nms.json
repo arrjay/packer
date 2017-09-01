@@ -33,11 +33,11 @@
       "vm_name":		"system.qcow2",
       "output_directory":	"output-qemu-{{user `system`}}",
 
-      "iso_url":		"{{user `mirrors_kernel_org`}}/{{user `c7_netinstall`}}",
+      "iso_url":		"{{user `centos_mirror`}}{{user `c7_netinstall`}}",
       "iso_checksum":		"{{user `c7_netinstall_cksum`}}",
       "iso_checksum_type":	"{{user `c7_netinstall_cksum_type`}}",
 
-      "boot_command":	"{{user `c7_efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `mirrors_kernel_org`}} console=ttyS0{{user `c7_efi_boot2`}}",
+      "boot_command":	"{{user `c7_efi_boot`}}ks=http://{{ .HTTPIP}}:{{ .HTTPPort }}/ks.cfg mirroruri={{user `centos_mirror`}} console=ttyS0{{user `c7_efi_boot2`}}",
       "shutdown_command":	"{{user `c7_shutdown`}}",
 
       "http_directory":		"{{user `system`}}-files",
@@ -96,9 +96,9 @@
       "type": "shell",
       "scripts":
       [
-        "shared/centos/stamp.sh",
-        "shared/centos/epel.sh",
-        "shared/centos/augeas.sh"
+        "shared/scripts/stamp.sh",
+        "shared/scripts/epel.sh",
+        "shared/scripts/augeas.sh"
       ]
     },
     {
