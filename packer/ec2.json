@@ -22,10 +22,13 @@
       "boot_wait":		"{{user `obsd_boot_wait`}}",
       "http_directory":		"{{user `system`}}/http",
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
-
       "shutdown_command":	"shutdown -hp now",
+
       "ssh_username":		"root",
-      "ssh_private_key_file":	"id_rsa"
+      "ssh_private_key_file":	"id_rsa",
+
+      "http_port_min":		"9080",
+      "http_port_max":		"9080"
     },
     {
       "type":			"vmware-iso",
@@ -59,10 +62,13 @@
       "boot_wait":		"{{user `obsd_boot_wait`}}",
       "http_directory":		"{{user `system`}}/http",
       "boot_command":		"{{user `obsd_boot`}}http://{{ .HTTPIP }}:{{ .HTTPPort }}/obsd-install.conf{{user `obsd_boot2`}}",
-
       "shutdown_command":	"shutdown -hp now",
+
       "ssh_username":		"root",
-      "ssh_password":		"id_rsa"
+      "ssh_private_key_file":	"id_rsa",
+
+      "http_port_min":		"9080",
+      "http_port_max":		"9080"
     }
   ],
   "provisioners":
