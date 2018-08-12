@@ -24,7 +24,7 @@
     },
     {
       "type": "shell",
-      "inline": "zypper --non-interactive up -y"
+      "inline": "zypper --non-interactive up -y --replacefiles"
     },
     {
       "execute_command":	"chmod +x {{ .Path }}; sudo env {{ .Vars }} {{ .Path }}",

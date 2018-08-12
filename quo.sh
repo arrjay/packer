@@ -14,7 +14,7 @@ if [ ! -e "$(basename ${SOURCE})" ] ; then
   curl -LO "${SOURCE}"
 fi
 
-storedsum=$(grep "$(basename ${SOURCE} -Current.raw.xz)" "$(basename ${SUM})"|cut -d' ' -f1)
+storedsum=$(perl -ne 'unless (/-----BEGIN PGP SIGNATURE/../-----END PGP SIGNATURE/) { if ($. >3) { print; } }' < "$(basename ${SUM})")
 sum=$(sha256sum "$(basename ${SOURCE})"|cut -d ' ' -f1) 2>/dev/null
 if [ "${sum}" != "${storedsum}" ] ; then
   exit 2
@@ -56,14 +56,15 @@ done
 
 echo "${dm_hex}" | xxd -r - output-qemu-quo/system.img
 
-guestfish <<_EOF_
-add output-qemu-quo/system.img
+sync
+
+LIBGUESTFS_BACKEND=direct guestfish --rw -a output-qemu-quo/system.img <<_EOF_
 run
 resize2fs /dev/sda2
 _EOF_
 
-curl -L -o output-qemu-quo/workfiles/vmlinuz http://mko.wcs.bbxn.us/fedora/releases/25/Server/armhfp/os/images/pxeboot/vmlinuz
-curl -L -o output-qemu-quo/workfiles/initrd.img http://mko.wcs.bbxn.us/fedora/releases/25/Server/armhfp/os/images/pxeboot/initrd.img
+curl -L -o output-qemu-quo/workfiles/vmlinuz http://mirrors.kernel.org/fedora/releases/28/Server/armhfp/os/images/pxeboot/vmlinuz
+curl -L -o output-qemu-quo/workfiles/initrd.img http://mirrors.kernel.org/fedora/releases/28/Server/armhfp/os/images/pxeboot/initrd.img
 
 tmux -L varm start-server
 tmux -L varm new-session -d -s qemu \
